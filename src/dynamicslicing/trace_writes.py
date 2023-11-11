@@ -1,0 +1,1 @@
+# Implement a DynaPyt analysis to trace all writes by printing them to stdout.
