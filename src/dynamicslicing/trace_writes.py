@@ -4,6 +4,10 @@ import logging
 from typing import Any, Callable, List
 from dynapyt.analyses.BaseAnalysis import BaseAnalysis
 
+# dynamicslicing % python -m dynapyt.run_instrumentation --analysis dynamicslicing.trace_writes.TraceWrites --directory tmp
+# dynamicslicing % python -m dynapyt.run_analysis --analysis dynamicslicing.trace_writes.TraceWrites --entry tmp/milestone_1_example_program.py
+
+
 
 class TraceWrites(BaseAnalysis):
     """
@@ -20,12 +24,13 @@ class TraceWrites(BaseAnalysis):
 
     def log(self, iid: int, *args, **kwargs):
         res = ""
-        # for arg in args:
-        #     if 'danger_of_recursion' in kwargs:
-        #         res += ' ' + str(hex(id(arg)))
-        #     else:
-        #         res += ' ' + str(arg)
-        logging.info(str(iid) + ": " + res[:80])
+        for arg in args:
+            if 'danger_of_recursion' in kwargs:
+                res += ' ' + str(hex(id(arg)))
+            else:
+                res += ' ' + str(arg)
+        logging.info(res)
+        print(res)
 
     def write(
             self, dyn_ast: str, iid: int, old_vals: List[Callable], new_val: Any
@@ -57,4 +62,4 @@ class TraceWrites(BaseAnalysis):
             If provided, overwrites the returned value.
 
         """
-        self.log(iid, "    Writing ", new_val)
+        self.log(iid, new_val)
