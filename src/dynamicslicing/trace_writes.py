@@ -4,9 +4,9 @@ import logging
 from typing import Any, Callable, List
 from dynapyt.analyses.BaseAnalysis import BaseAnalysis
 
+
 # dynamicslicing % python -m dynapyt.run_instrumentation --analysis dynamicslicing.trace_writes.TraceWrites --directory tmp
 # dynamicslicing % python -m dynapyt.run_analysis --analysis dynamicslicing.trace_writes.TraceWrites --entry tmp/milestone_1_example_program.py
-
 
 
 class TraceWrites(BaseAnalysis):
