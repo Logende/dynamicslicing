@@ -59,6 +59,7 @@ def extract_variables_from_expression(expression: cst.BaseExpression) -> Sequenc
         # todo: support extracting variable from subscirpt elements
 
     elif isinstance(expression, cst.Name):
+        # todo: differentiate between variable name and class name (e.g. when creating new instance)
         result.append(expression.value)
 
     elif isinstance(expression, cst.BinaryOperation):
@@ -126,49 +127,15 @@ class SliceDataflow(BaseAnalysis):
         iid_object = IIDs(source_path)
         self.syntax_tree = cst.parse_module(source)
 
-        # Instrument the code
-        #klass = self.__class__
-        #module = klass.__module__
-        #full_qualified_class_name = module + '.' + klass.__qualname__
-        #selected_hooks = get_hooks_from_analysis([full_qualified_class_name])
-        # instrumented_code = instrument_code(source, source_path, iid_object, selected_hooks)
-
-        # Analyse the code
-
-        print("init slicedataflow file")
         self.next_event_id = 0
         self.events: List[DataflowEvent] = []
 
+    # todo: add support for more hooks to track other ways of variable use
+    # it might be that I will remove the expression extraction code if I already get all uses via hooks directly
+    # e.g. for assignment hook only fire assignment event, and to get uses just listen to variable read event
     def write(
             self, dyn_ast: str, iid: int, old_vals: List[Callable], new_val: Any
     ) -> Any:
-        """Hook for writes.
-
-
-        Parameters
-        ----------
-        dyn_ast : str
-            The path to the original code. Can be used to extract the syntax tree.
-
-        iid : int
-            Unique ID of the syntax tree node.
-
-        old_vals : Any
-            A list of old values before the write takes effect.
-            It's a list to support multiple assignments.
-            Each old value is wrapped into a lambda function, so that
-            the analysis writer can decide if and when to evaluate it.
-
-        new_val : Any
-            The value after the write takes effect.
-
-
-        Returns
-        -------
-        Any
-            If provided, overwrites the returned value.
-
-        """
         ast = self._get_ast(dyn_ast)
         location = self.iid_to_location(dyn_ast, iid)
         node = get_node_by_location(ast[0], location)
@@ -179,8 +146,35 @@ class SliceDataflow(BaseAnalysis):
 
             target_variables = extract_variables_from_assign_targets(targets)
             value_variables = extract_variables_from_expression(value)
-            print("todo")
+
+            # first the variables are used
+            for value_variable in value_variables:
+                self.events.append(DataflowEvent(
+                    value_variable,
+                    location.start_line,
+                    self.next_event_id,
+                    DataflowEventType.USE
+                ))
+                self.next_event_id += 1
+
+            # second te values are assigned to the target variables
+            for target_variable in target_variables:
+                self.events.append(DataflowEvent(
+                    target_variable,
+                    location.start_line,
+                    self.next_event_id,
+                    DataflowEventType.ASSIGN
+                ))
+                self.next_event_id += 1
+
         else:
             raise RuntimeError("Unexpected behavior: found write event that is not of type cst.Assign: " + str(node))
 
-        print("dyn ast: " + dyn_ast + " iid: " + str(iid) + " old_vals: " + str(old_vals) + " new_val: " + str(new_val))
+    def begin_execution(self) -> None:
+        """Hook for the start of execution."""
+        pass
+
+    def end_execution(self) -> None:
+        """Hook for the end of execution."""
+        # Traverse use and assign events in backwards order
+        for i in reversed(a):
