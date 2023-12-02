@@ -116,11 +116,6 @@ def extract_variables_from_assign_targets(assign_targets: Sequence[cst.AssignTar
 class SliceDataflow(BaseAnalysis):
     def __init__(self, source_path):
         super().__init__()
-        root_logger = logging.getLogger()
-        root_logger.setLevel(logging.INFO)
-        handler = logging.FileHandler("output.log", "w", "utf-8")
-        handler.setFormatter(logging.Formatter("%(message)s"))
-        root_logger.addHandler(handler)
 
         with open(source_path, "r") as file:
             source = file.read()
@@ -147,6 +142,8 @@ class SliceDataflow(BaseAnalysis):
             target_variables = extract_variables_from_assign_targets(targets)
             value_variables = extract_variables_from_expression(value)
 
+            print(self)
+
             # first the variables are used
             for value_variable in value_variables:
                 self.events.append(DataflowEvent(
@@ -166,15 +163,33 @@ class SliceDataflow(BaseAnalysis):
                     DataflowEventType.ASSIGN
                 ))
                 self.next_event_id += 1
+                pass
 
         else:
             raise RuntimeError("Unexpected behavior: found write event that is not of type cst.Assign: " + str(node))
 
-    def begin_execution(self) -> None:
-        """Hook for the start of execution."""
-        pass
-
-    def end_execution(self) -> None:
-        """Hook for the end of execution."""
-        # Traverse use and assign events in backwards order
-        for i in reversed(a):
+    #def read(self, dyn_ast: str, iid: int, val: Any) -> Any:
+    #    ast = self._get_ast(dyn_ast)
+    #    location = self.iid_to_location(dyn_ast, iid)
+    #    node = get_node_by_location(ast[0], location)
+    #    value_variables = extract_variables_from_expression(node)
+    #    for value_variable in value_variables:
+    #        self.events.append(DataflowEvent(
+    #            value_variable,
+    #            location.start_line,
+    #            self.next_event_id,
+    #            DataflowEventType.USE
+    #        ))
+    #        self.next_event_id += 1
+#
+    #def begin_execution(self) -> None:
+    #    """Hook for the start of execution."""
+    #    pass
+#
+    #def end_execution(self) -> None:
+    #    """Hook for the end of execution."""
+    #    # Traverse use and assign events in backwards order
+    #    relevant_variables = []
+    #    for event in reversed(self.events):
+    #        if event.event_type == DataflowEventType.USE:
+    #            pass
