@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, List, Callable, Union
+from typing import Any, List, Callable, Union, Sequence
 import logging
 
 import libcst as cst
@@ -25,34 +25,91 @@ class DataflowEvent:
         self.event_type = event_type
 
 
-# Todo: node does not need to be transformer
-class AssignmentFinder(m.MatcherDecoratableTransformer):
-    """
-    Remove the given code lines.
-    """
-    METADATA_DEPENDENCIES = (
-        ParentNodeProvider,
-        PositionProvider,
-    )
+def extract_variables_from_formatted_string_content(expression: cst.BaseFormattedStringContent) -> Sequence[str]:
+    result = []
 
-    def __init__(self, relevant_line: int):
-        super().__init__()
-        self.relevant_line = relevant_line
+    if isinstance(expression, cst.FormattedStringText):
+        pass
 
-    def on_visit(self, node: cst.CSTNode):
-        location = self.get_metadata(PositionProvider, node)
-        # do not go into children when already having found relevant line
-        return location.start.line != self.relevant_line
+    elif isinstance(expression, cst.FormattedStringExpression):
+        result.extend(extract_variables_from_expression(expression.expression))
 
-    def on_leave(self, original_node: CSTNodeT, updated_node: CSTNodeT) -> Union[CSTNodeT, RemovalSentinel, FlattenSentinel[CSTNodeT]]:
-        location = self.get_metadata(PositionProvider, original_node)
-        if location.start.line == self.relevant_line:
-            print("found relevant line in tree")
-            # found the node for the relevant line
-            #if original_node.
-            if original_node.
+    else:
+        raise RuntimeError("Unknown expression type for variable extraction: " + str(expression))
 
-        return updated_node
+    return result
+
+
+def extract_variables_from_expression(expression: cst.BaseExpression) -> Sequence[str]:
+    result = []
+
+    if isinstance(expression, cst.List):
+        for element in expression.elements:
+            result.extend(extract_variables_from_element(element))
+
+    elif isinstance(expression, cst.FormattedString):
+        for part in expression.parts:
+            result.extend(extract_variables_from_formatted_string_content(part))
+
+    elif isinstance(expression, cst.Subscript):
+        value: cst.BaseExpression = expression.value
+        result.extend(extract_variables_from_expression(value))
+
+        subscript_elements: Sequence[cst.SubscriptElement] = expression.slice
+        # todo: support extracting variable from subscirpt elements
+
+    elif isinstance(expression, cst.Name):
+        result.append(expression.value)
+
+    elif isinstance(expression, cst.BinaryOperation):
+        left = expression.left
+        right = expression.right
+        result.extend(extract_variables_from_expression(left))
+        result.extend(extract_variables_from_expression(right))
+
+    elif isinstance(expression, cst.Comparison):
+        left = expression.left
+        result.extend(extract_variables_from_expression(left))
+        for comparison_target in expression.comparisons:
+            target_comparator = comparison_target.comparator
+            result.extend(extract_variables_from_expression(target_comparator))
+
+    elif isinstance(expression, cst.Call):
+        func: cst.BaseExpression = expression.func
+        result.extend(extract_variables_from_expression(func))
+        args: Sequence[cst.Arg] = expression.args
+        # todo: consider whether args or scope are relevant? what if args shadow a outer scope variable?
+
+    elif isinstance(expression, cst.Attribute):
+        # todo
+        return []
+
+    elif isinstance(expression, (cst.Integer, cst.Float, cst.SimpleString)):
+        pass
+
+    else:
+        raise RuntimeError("Unknown expression type for variable extraction: " + str(expression))
+
+    return result
+
+
+def extract_variables_from_element(element: cst.BaseElement) -> Sequence[str]:
+    result = []
+    value = element.value
+
+    if isinstance(value, (cst.SimpleString, cst.Float, cst.Integer, cst.Newline)):
+        pass
+
+    else:
+        raise RuntimeError("Unknown element value type for variable extraction: " + str(value))
+    return result
+
+
+def extract_variables_from_assign_targets(assign_targets: Sequence[cst.AssignTarget]) -> Sequence[str]:
+    result = []
+    for assign_target in assign_targets:
+        result.extend(extract_variables_from_expression(assign_target.target))
+    return result
 
 
 class SliceDataflow(BaseAnalysis):
@@ -114,10 +171,16 @@ class SliceDataflow(BaseAnalysis):
         """
         ast = self._get_ast(dyn_ast)
         location = self.iid_to_location(dyn_ast, iid)
+        node = get_node_by_location(ast[0], location)
 
-        wrapper = cst.metadata.MetadataWrapper(self.syntax_tree)
-        finder = AssignmentFinder(location.start_line)
-        _ = wrapper.visit(finder)
+        if isinstance(node, cst.Assign):
+            targets: Sequence[cst.AssignTarget] = node.targets
+            value: cst.BaseExpression = node.value
 
+            target_variables = extract_variables_from_assign_targets(targets)
+            value_variables = extract_variables_from_expression(value)
+            print("todo")
+        else:
+            raise RuntimeError("Unexpected behavior: found write event that is not of type cst.Assign: " + str(node))
 
         print("dyn ast: " + dyn_ast + " iid: " + str(iid) + " old_vals: " + str(old_vals) + " new_val: " + str(new_val))
