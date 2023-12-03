@@ -28,8 +28,9 @@ class SlicingCriterionFinder(cst.CSTVisitor):
 
 
 def determine_slicing_criterion_line(ast: libcst.Module) -> int:
-    criterion_finder = SlicingCriterionFinder(" slicing criterion")
-    ast.visit(criterion_finder)
+    criterion_finder = SlicingCriterionFinder("# slicing criterion")
+    wrapper = cst.metadata.MetadataWrapper(ast)
+    wrapper.visit(criterion_finder)
     if len(criterion_finder.results) == 0:
         raise RuntimeError("Unable to find slicing criterion in given ast.")
     elif len(criterion_finder.results) > 1:
@@ -131,11 +132,16 @@ class DataflowRecorderSimple:
         self.assignments: Dict[int, Set[str]] = {}
         self.usages: Dict[int, Set[str]] = {}
 
+        self.latest_assignments: Dict[str, int] = {}
+        self.dependency_table: Dict[int, Set[int]] = {}  # variable assignment line mapped to places where it is used
+
     def record_assignment(self, variables: Sequence[str], line: int):
         if line not in self.assignments.keys():
             self.assignments[line] = set()
         for variable in variables:
             self.assignments[line].add(variable)
+
+            self.latest_assignments[variable] = line
 
     def record_usage(self, variables: Sequence[str], line: int):
         if line not in self.usages.keys():
@@ -143,14 +149,16 @@ class DataflowRecorderSimple:
         for variable in variables:
             self.usages[line].add(variable)
 
+            latest_assignment = self.latest_assignments.get(variable, -1)
+            if latest_assignment not in self.dependency_table.keys():
+                self.dependency_table[latest_assignment] = set()
+            self.dependency_table[latest_assignment].add(line)
+
 
 class DataflowGraph:
-    def __int__(self, assignments: Dict[int, Set[str]], usages: Dict[int, Set[str]], slicing_criterion: int):
-        relevant_variables = usages.get(slicing_criterion, set()).copy()
-
-        for line in range(slicing_criterion-1, 0, -1):
-            line_assignments = assignments.get(line, set())
-            line_usages = usages.get(line, set())
+    def __int__(self, dependency_table: Dict[int, Set[int]], slicing_criterion: int):
+        pass
+    #todo
 
 
 
@@ -205,22 +213,10 @@ class SliceDataflow(BaseAnalysis):
         self.record_usage(value_variables, location.start_line)
         print("asd")
 
-    def read(self, dyn_ast: str, iid: int, val: Any) -> Any:
-        ast = self._get_ast(dyn_ast)
-        location = self.iid_to_location(dyn_ast, iid)
-        node = get_node_by_location(ast[0], location)
-        value_variables = extract_variables_from_expression(node)
-        self.record_usage(value_variables, location.start_line)
-        print("asd")
-#
-    #def begin_execution(self) -> None:
-    #    """Hook for the start of execution."""
-    #    pass
-#
-    #def end_execution(self) -> None:
-    #    """Hook for the end of execution."""
-    #    # Traverse use and assign events in backwards order
-    #    relevant_variables = []
-    #    for event in reversed(self.events):
-    #        if event.event_type == DataflowEventType.USE:
-    #            pass
+    def begin_execution(self) -> None:
+        """Hook for the start of execution."""
+        pass
+
+    def end_execution(self) -> None:
+        """Hook for the end of execution."""
+        print("end")
