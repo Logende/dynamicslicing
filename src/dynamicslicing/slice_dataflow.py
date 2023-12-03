@@ -1,28 +1,41 @@
 from enum import Enum
-from typing import Any, List, Callable, Union, Sequence
-import logging
+from typing import Any, List, Callable, Sequence, Dict, Set
 
+import libcst
 import libcst as cst
-import libcst.matchers as m
 from dynapyt.analyses.BaseAnalysis import BaseAnalysis
 from dynapyt.instrument.IIDs import IIDs
-from dynapyt.instrument.instrument import instrument_code, get_hooks_from_analysis
-from dynapyt.utils.nodeLocator import get_node_by_location, get_parent_by_type
-from libcst import CSTNodeT, RemovalSentinel, FlattenSentinel
-from libcst.metadata import PositionProvider, ParentNodeProvider
+from dynapyt.utils.nodeLocator import get_node_by_location
+from libcst.metadata import PositionProvider
 
 
-class DataflowEventType(Enum):
-    USE = 0,
-    ASSIGN = 1
+class SlicingCriterionFinder(cst.CSTVisitor):
+    METADATA_DEPENDENCIES = (
+        PositionProvider,
+    )
+
+    def __init__(self, criterion_text: str):
+        super().__init__()
+        self.criterion_text = criterion_text
+        self.results = []
+
+    def on_visit(self, node: cst.CSTNode):
+        location = self.get_metadata(PositionProvider, node)
+        if isinstance(node, cst.Comment):
+            if node.value == self.criterion_text:
+                self.results.append(location.start.line)
+        return True
 
 
-class DataflowEvent:
-    def __init__(self, var: str, line: int, event_id: int, event_type: DataflowEventType):
-        self.var = var
-        self.line = line
-        self.event_id = event_id
-        self.event_type = event_type
+def determine_slicing_criterion_line(ast: libcst.Module) -> int:
+    criterion_finder = SlicingCriterionFinder(" slicing criterion")
+    ast.visit(criterion_finder)
+    if len(criterion_finder.results) == 0:
+        raise RuntimeError("Unable to find slicing criterion in given ast.")
+    elif len(criterion_finder.results) > 1:
+        raise RuntimeError("Found multiple slicing criteria in given ast: " + str(criterion_finder.results))
+    else:
+        return criterion_finder.results[0]
 
 
 def extract_variables_from_formatted_string_content(expression: cst.BaseFormattedStringContent) -> Sequence[str]:
@@ -59,7 +72,7 @@ def extract_variables_from_expression(expression: cst.BaseExpression) -> Sequenc
         # todo: support extracting variable from subscirpt elements
 
     elif isinstance(expression, cst.Name):
-        # todo: differentiate between variable name and class name (e.g. when creating new instance)
+        # todo: differentiate between variable name and class name (e.g. when creating new instance) or function call
         result.append(expression.value)
 
     elif isinstance(expression, cst.BinaryOperation):
@@ -113,6 +126,35 @@ def extract_variables_from_assign_targets(assign_targets: Sequence[cst.AssignTar
     return result
 
 
+class DataflowRecorderSimple:
+    def __init__(self):
+        self.assignments: Dict[int, Set[str]] = {}
+        self.usages: Dict[int, Set[str]] = {}
+
+    def record_assignment(self, variables: Sequence[str], line: int):
+        if line not in self.assignments.keys():
+            self.assignments[line] = set()
+        for variable in variables:
+            self.assignments[line].add(variable)
+
+    def record_usage(self, variables: Sequence[str], line: int):
+        if line not in self.usages.keys():
+            self.usages[line] = set()
+        for variable in variables:
+            self.usages[line].add(variable)
+
+
+class DataflowGraph:
+    def __int__(self, assignments: Dict[int, Set[str]], usages: Dict[int, Set[str]], slicing_criterion: int):
+        relevant_variables = usages.get(slicing_criterion, set()).copy()
+
+        for line in range(slicing_criterion-1, 0, -1):
+            line_assignments = assignments.get(line, set())
+            line_usages = usages.get(line, set())
+
+
+
+
 class SliceDataflow(BaseAnalysis):
     def __init__(self, source_path):
         super().__init__()
@@ -120,10 +162,15 @@ class SliceDataflow(BaseAnalysis):
         with open(source_path, "r") as file:
             source = file.read()
         iid_object = IIDs(source_path)
-        self.syntax_tree = cst.parse_module(source)
+        self.ast = cst.parse_module(source)
+        self.recorder = DataflowRecorderSimple()
+        self.slicing_criterion = determine_slicing_criterion_line(self.ast)
 
-        self.next_event_id = 0
-        self.events: List[DataflowEvent] = []
+    def record_assignment(self, variables: Sequence[str], line: int):
+        self.recorder.record_assignment(variables, line)
+
+    def record_usage(self, variables: Sequence[str], line: int):
+        self.recorder.record_usage(variables, line)
 
     # todo: add support for more hooks to track other ways of variable use
     # it might be that I will remove the expression extraction code if I already get all uses via hooks directly
@@ -137,50 +184,34 @@ class SliceDataflow(BaseAnalysis):
 
         if isinstance(node, cst.Assign):
             targets: Sequence[cst.AssignTarget] = node.targets
-            value: cst.BaseExpression = node.value
-
             target_variables = extract_variables_from_assign_targets(targets)
-            value_variables = extract_variables_from_expression(value)
+            self.record_assignment(target_variables, location.start_line)
 
-            print(self)
+            # no need to extract usages here: use read hook for usages instead
+            # value: cst.BaseExpression = node.value
+            # value_variables = extract_variables_from_expression(value)
+            # self.record_usage(value_variables, location.start_line)
 
-            # first the variables are used
-            for value_variable in value_variables:
-                self.events.append(DataflowEvent(
-                    value_variable,
-                    location.start_line,
-                    self.next_event_id,
-                    DataflowEventType.USE
-                ))
-                self.next_event_id += 1
-
-            # second te values are assigned to the target variables
-            for target_variable in target_variables:
-                self.events.append(DataflowEvent(
-                    target_variable,
-                    location.start_line,
-                    self.next_event_id,
-                    DataflowEventType.ASSIGN
-                ))
-                self.next_event_id += 1
-                pass
+            print("asd")
 
         else:
             raise RuntimeError("Unexpected behavior: found write event that is not of type cst.Assign: " + str(node))
 
-    #def read(self, dyn_ast: str, iid: int, val: Any) -> Any:
-    #    ast = self._get_ast(dyn_ast)
-    #    location = self.iid_to_location(dyn_ast, iid)
-    #    node = get_node_by_location(ast[0], location)
-    #    value_variables = extract_variables_from_expression(node)
-    #    for value_variable in value_variables:
-    #        self.events.append(DataflowEvent(
-    #            value_variable,
-    #            location.start_line,
-    #            self.next_event_id,
-    #            DataflowEventType.USE
-    #        ))
-    #        self.next_event_id += 1
+    def read(self, dyn_ast: str, iid: int, val: Any) -> Any:
+        ast = self._get_ast(dyn_ast)
+        location = self.iid_to_location(dyn_ast, iid)
+        node = get_node_by_location(ast[0], location)
+        value_variables = extract_variables_from_expression(node)
+        self.record_usage(value_variables, location.start_line)
+        print("asd")
+
+    def read(self, dyn_ast: str, iid: int, val: Any) -> Any:
+        ast = self._get_ast(dyn_ast)
+        location = self.iid_to_location(dyn_ast, iid)
+        node = get_node_by_location(ast[0], location)
+        value_variables = extract_variables_from_expression(node)
+        self.record_usage(value_variables, location.start_line)
+        print("asd")
 #
     #def begin_execution(self) -> None:
     #    """Hook for the start of execution."""
