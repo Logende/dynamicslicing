@@ -39,6 +39,21 @@ def determine_slicing_criterion_line(ast: libcst.Module) -> int:
         return criterion_finder.results[0]
 
 
+def compute_dataflow_dependents(dependency_table: Dict[int, Set[int]], slicing_criterion: int) -> Set[int]:
+    created_new_knowledge = True
+    relevant_nodes = {slicing_criterion}
+
+    while created_new_knowledge:
+        created_new_knowledge = False
+
+        for relevant_node in relevant_nodes:
+            for assignment, usages in dependency_table:
+                if relevant_node in usages and assignment not in relevant_nodes:
+                    relevant_nodes.add(assignment)
+                    created_new_knowledge = True
+    return relevant_nodes
+
+
 def extract_variables_from_formatted_string_content(expression: cst.BaseFormattedStringContent) -> Sequence[str]:
     result = []
 
@@ -155,14 +170,6 @@ class DataflowRecorderSimple:
             self.dependency_table[latest_assignment].add(line)
 
 
-class DataflowGraph:
-    def __int__(self, dependency_table: Dict[int, Set[int]], slicing_criterion: int):
-        pass
-    #todo
-
-
-
-
 class SliceDataflow(BaseAnalysis):
     def __init__(self, source_path):
         super().__init__()
@@ -219,4 +226,8 @@ class SliceDataflow(BaseAnalysis):
 
     def end_execution(self) -> None:
         """Hook for the end of execution."""
-        print("end")
+        dependency_table = self.recorder.dependency_table
+        slicing_criterion = self.slicing_criterion
+        result_slice = compute_dataflow_dependents(dependency_table, slicing_criterion)
+
+        print(str(result_slice))
