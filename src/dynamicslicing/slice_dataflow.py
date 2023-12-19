@@ -1,12 +1,15 @@
 from enum import Enum
-from typing import Any, List, Callable, Sequence, Dict, Set
+from pathlib import Path
+from typing import Any, List, Callable, Sequence, Dict, Set, Tuple
 
 import libcst
 import libcst as cst
 from dynapyt.analyses.BaseAnalysis import BaseAnalysis
 from dynapyt.instrument.IIDs import IIDs
-from dynapyt.utils.nodeLocator import get_node_by_location
-from libcst.metadata import PositionProvider
+from dynapyt.utils.nodeLocator import get_node_by_location, get_parent_by_type
+from libcst.metadata import PositionProvider, ParentNodeProvider
+
+from .utils import remove_lines
 
 
 class SlicingCriterionFinder(cst.CSTVisitor):
@@ -25,6 +28,7 @@ class SlicingCriterionFinder(cst.CSTVisitor):
             if node.value == self.criterion_text:
                 self.results.append(location.start.line)
         return True
+
 
 
 def determine_slicing_criterion_line(ast: libcst.Module) -> int:
@@ -46,8 +50,8 @@ def compute_dataflow_dependents(dependency_table: Dict[int, Set[int]], slicing_c
     while created_new_knowledge:
         created_new_knowledge = False
 
-        for relevant_node in relevant_nodes:
-            for assignment, usages in dependency_table:
+        for relevant_node in relevant_nodes.copy():
+            for assignment, usages in dependency_table.items():
                 if relevant_node in usages and assignment not in relevant_nodes:
                     relevant_nodes.add(assignment)
                     created_new_knowledge = True
@@ -141,6 +145,8 @@ def extract_variables_from_assign_targets(assign_targets: Sequence[cst.AssignTar
         result.extend(extract_variables_from_expression(assign_target.target))
     return result
 
+def extract_parent_node_lines(ast, location, ):
+    function_definition_parent = get_parent_by_type(ast, location, cst.FunctionDef)
 
 class DataflowRecorderSimple:
     def __init__(self):
@@ -149,6 +155,8 @@ class DataflowRecorderSimple:
 
         self.latest_assignments: Dict[str, int] = {}
         self.dependency_table: Dict[int, Set[int]] = {}  # variable assignment line mapped to places where it is used
+
+        self.other_dependents: Set[int] = set()
 
     def record_assignment(self, variables: Sequence[str], line: int):
         if line not in self.assignments.keys():
@@ -169,15 +177,19 @@ class DataflowRecorderSimple:
                 self.dependency_table[latest_assignment] = set()
             self.dependency_table[latest_assignment].add(line)
 
+    def record_other_dependent(self, line: int):
+        self.other_dependents.add(line)
+
 
 class SliceDataflow(BaseAnalysis):
     def __init__(self, source_path):
         super().__init__()
 
         with open(source_path, "r") as file:
-            source = file.read()
+            self.source = file.read()
         iid_object = IIDs(source_path)
-        self.ast = cst.parse_module(source)
+        self.source_path = source_path
+        self.ast = cst.parse_module(self.source)
         self.recorder = DataflowRecorderSimple()
         self.slicing_criterion = determine_slicing_criterion_line(self.ast)
 
@@ -187,9 +199,9 @@ class SliceDataflow(BaseAnalysis):
     def record_usage(self, variables: Sequence[str], line: int):
         self.recorder.record_usage(variables, line)
 
-    # todo: add support for more hooks to track other ways of variable use
-    # it might be that I will remove the expression extraction code if I already get all uses via hooks directly
-    # e.g. for assignment hook only fire assignment event, and to get uses just listen to variable read event
+    def record_other_dependent(self, line: int):
+        self.recorder.record_other_dependent(line)
+
     def write(
             self, dyn_ast: str, iid: int, old_vals: List[Callable], new_val: Any
     ) -> Any:
@@ -202,12 +214,10 @@ class SliceDataflow(BaseAnalysis):
             target_variables = extract_variables_from_assign_targets(targets)
             self.record_assignment(target_variables, location.start_line)
 
-            # no need to extract usages here: use read hook for usages instead
-            # value: cst.BaseExpression = node.value
-            # value_variables = extract_variables_from_expression(value)
-            # self.record_usage(value_variables, location.start_line)
-
-            print("asd")
+        elif isinstance(node, cst.AugAssign):
+            targets: Sequence[cst.AssignTarget] = node.targets
+            target_variables = extract_variables_from_assign_targets(targets)
+            self.record_assignment(target_variables, location.start_line)
 
         else:
             raise RuntimeError("Unexpected behavior: found write event that is not of type cst.Assign: " + str(node))
@@ -218,7 +228,30 @@ class SliceDataflow(BaseAnalysis):
         node = get_node_by_location(ast[0], location)
         value_variables = extract_variables_from_expression(node)
         self.record_usage(value_variables, location.start_line)
-        print("asd")
+
+    def function_enter(
+        self, dyn_ast: str, iid: int, args: List[Any], name: str, is_lambda: bool
+    ) -> None:
+        ast = self._get_ast(dyn_ast)
+        location = self.iid_to_location(dyn_ast, iid)
+        node = get_node_by_location(ast[0], location)
+        if isinstance(node, cst.FunctionDef):
+            # due to restriction to intra-procedural slice: simply add functions entered as dependency (slice_me)
+            if node.name.value == "slice_me":
+                self.record_other_dependent(location.start_line)
+
+    def pre_call(
+        self, dyn_ast: str, iid: int, function: Callable, pos_args: Tuple, kw_args: Dict
+    ):
+        ast = self._get_ast(dyn_ast)
+        location = self.iid_to_location(dyn_ast, iid)
+        node = get_node_by_location(ast[0], location)
+        if isinstance(node, cst.Call):
+            func = node.func
+            # due to restriction to intra-procedural slice: simply add function calls as dependency (slice_me)
+            if isinstance(func, cst.Name):
+                if func.value == "slice_me":
+                    self.record_other_dependent(location.start_line)
 
     def begin_execution(self) -> None:
         """Hook for the start of execution."""
@@ -226,8 +259,18 @@ class SliceDataflow(BaseAnalysis):
 
     def end_execution(self) -> None:
         """Hook for the end of execution."""
-        dependency_table = self.recorder.dependency_table
-        slicing_criterion = self.slicing_criterion
-        result_slice = compute_dataflow_dependents(dependency_table, slicing_criterion)
+        result_slice = self.compute_slice()
+        self.save_slice(result_slice)
 
-        print(str(result_slice))
+    def compute_slice(self) -> Set[int]:
+        return compute_dataflow_dependents(
+            self.recorder.dependency_table,
+            self.slicing_criterion).union(self.recorder.other_dependents)
+
+    def save_slice(self, slice_to_save: Set[int]):
+        original_file_path = Path(self.source_path)
+        folder_path = original_file_path.parent
+        slice_file_path = folder_path.joinpath("sliced.py")
+        file_content = remove_lines(self.source, list(slice_to_save))
+        with open(slice_file_path, "w") as file:
+            file.write(file_content)

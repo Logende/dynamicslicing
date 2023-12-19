@@ -2,6 +2,7 @@ from typing import List, Union
 import libcst as cst
 from libcst._nodes.statement import BaseStatement, If
 from libcst import CSTNodeT, RemovalSentinel, FlattenSentinel
+from libcst._position import CodeRange
 from libcst.metadata import (
     ParentNodeProvider,
     PositionProvider,
@@ -45,16 +46,17 @@ class LineRemover(m.MatcherDecoratableTransformer):
         self.lines_to_keep = lines_to_keep
 
     def on_visit(self, node: cst.CSTNode):
-        location = self.get_metadata(PositionProvider, node)
-        # visit children only when node should be kept, otherwise would lead to errors (e.g. removing name of function)
-        return location.start.line in self.lines_to_keep
+        return self.is_keep_node(node)
 
     def on_leave(self, original_node: CSTNodeT, updated_node: CSTNodeT) -> Union[CSTNodeT, RemovalSentinel, FlattenSentinel[CSTNodeT]]:
-        location = self.get_metadata(PositionProvider, original_node)
-        if location.start.line in self.lines_to_keep:
+        if self.is_keep_node(original_node):
             return updated_node
 
         return cst.RemoveFromParent()
+
+    def is_keep_node(self, node: cst.CSTNode):
+        location = self.get_metadata(PositionProvider, node)
+        return location.start.line in self.lines_to_keep or isinstance(node, cst.IndentedBlock)
 
 
 def negate_odd_ifs(code: str) -> str:
