@@ -2,6 +2,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, List, Callable, Sequence, Dict, Set, Tuple
 
+import dynapyt.instrument.IIDs
 import libcst
 import libcst as cst
 from dynapyt.analyses.BaseAnalysis import BaseAnalysis
@@ -56,6 +57,15 @@ def compute_dataflow_dependents(dependency_table: Dict[int, Set[int]], slicing_c
                     relevant_nodes.add(assignment)
                     created_new_knowledge = True
     return relevant_nodes
+
+
+def extract_variables_from_args(args: Sequence[cst.Arg]) -> Sequence[str]:
+    result = []
+
+    for arg in args:
+        result.extend(extract_variables_from_expression(arg.value))
+
+    return result
 
 
 def extract_variables_from_formatted_string_content(expression: cst.BaseFormattedStringContent) -> Sequence[str]:
@@ -145,8 +155,14 @@ def extract_variables_from_assign_targets(assign_targets: Sequence[cst.AssignTar
         result.extend(extract_variables_from_expression(assign_target.target))
     return result
 
-def extract_parent_node_lines(ast, location, ):
-    function_definition_parent = get_parent_by_type(ast, location, cst.FunctionDef)
+
+def does_assignment_consider_previous_values(assign_targets: Sequence[cst.AssignTarget]) -> bool:
+    for target in assign_targets:
+        if isinstance(target.target, cst.Subscript):
+            return True
+
+    return False
+
 
 class DataflowRecorderSimple:
     def __init__(self):
@@ -202,6 +218,10 @@ class SliceDataflow(BaseAnalysis):
     def record_other_dependent(self, line: int):
         self.recorder.record_other_dependent(line)
 
+    def get_parent_dependents(self, ast: cst.CSTNodeT, location: dynapyt.instrument.IIDs.Location, node: cst.CSTNode):
+        parent_function_def = get_parent_by_type(ast, location, cst.FunctionDef)
+        print("todo")
+
     def write(
             self, dyn_ast: str, iid: int, old_vals: List[Callable], new_val: Any
     ) -> Any:
@@ -212,11 +232,14 @@ class SliceDataflow(BaseAnalysis):
         if isinstance(node, cst.Assign):
             targets: Sequence[cst.AssignTarget] = node.targets
             target_variables = extract_variables_from_assign_targets(targets)
+            if does_assignment_consider_previous_values(targets):
+                self.record_usage(target_variables, location.start_line)
             self.record_assignment(target_variables, location.start_line)
 
         elif isinstance(node, cst.AugAssign):
-            targets: Sequence[cst.AssignTarget] = node.targets
-            target_variables = extract_variables_from_assign_targets(targets)
+            target_expression: cst.BaseAssignTargetExpression = node.target
+            target_variables = extract_variables_from_expression(target_expression)
+            self.record_usage(target_variables, location.start_line)
             self.record_assignment(target_variables, location.start_line)
 
         else:
@@ -236,7 +259,6 @@ class SliceDataflow(BaseAnalysis):
         location = self.iid_to_location(dyn_ast, iid)
         node = get_node_by_location(ast[0], location)
         if isinstance(node, cst.FunctionDef):
-            # due to restriction to intra-procedural slice: simply add functions entered as dependency (slice_me)
             if node.name.value == "slice_me":
                 self.record_other_dependent(location.start_line)
 
@@ -247,11 +269,20 @@ class SliceDataflow(BaseAnalysis):
         location = self.iid_to_location(dyn_ast, iid)
         node = get_node_by_location(ast[0], location)
         if isinstance(node, cst.Call):
+            args = node.args
             func = node.func
-            # due to restriction to intra-procedural slice: simply add function calls as dependency (slice_me)
             if isinstance(func, cst.Name):
                 if func.value == "slice_me":
                     self.record_other_dependent(location.start_line)
+            if isinstance(func, cst.Attribute):
+                func_attr = func.attr
+                func_value = func.value
+                if isinstance(func_attr, cst.Name) and isinstance(func_value, cst.Name):
+                    target_variables = extract_variables_from_args(args)
+                    self.record_usage(target_variables, location.start_line)
+                    self.record_usage([func_value.value], location.start_line)
+                    self.record_assignment([func_value.value], location.start_line)
+
 
     def begin_execution(self) -> None:
         """Hook for the start of execution."""
