@@ -106,5 +106,7 @@ def does_assignment_consider_previous_values(assign_targets: Sequence[cst.Assign
     for target in assign_targets:
         if isinstance(target.target, cst.Subscript):
             return True
+        if isinstance(target.target, cst.Attribute):
+            return True
 
     return False
