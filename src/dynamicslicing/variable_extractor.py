@@ -68,8 +68,11 @@ def extract_variables_from_expression(expression: cst.BaseExpression) -> Sequenc
         # todo: consider whether args or scope are relevant? what if args shadow a outer scope variable?
 
     elif isinstance(expression, cst.Attribute):
-        # todo
-        return []
+        prefix = extract_variables_from_expression(expression.value)
+        attr = expression.attr.value
+        path = prefix[0] + "." + attr
+        result.append(path)
+        result.extend(prefix)
 
     elif isinstance(expression, (cst.Integer, cst.Float, cst.SimpleString)):
         pass
