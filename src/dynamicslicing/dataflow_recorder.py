@@ -1,4 +1,4 @@
-from typing import Sequence, Dict, Set
+from typing import Sequence, Dict, Set, Optional
 
 from .finders import Definition
 import libcst as cst
@@ -48,19 +48,24 @@ class DataflowRecorderSimple:
         self.usages: Dict[int, Set[str]] = {}
 
         self.latest_assignments: Dict[str, int] = {}
+        self.latest_aliases: Dict[str, str] = {}
+
         self.dependency_table: Dict[int, Set[int]] = {}  # variable assignment line mapped to places where it is used
         update_dependency_table_with_definitions(self.dependency_table, self.definitions)
 
         self.other_dependents: Set[int] = set()
 
-
-    def record_assignment(self, variables: Sequence[str], line: int):
+    def record_assignment(self, variables: Sequence[str], line: int, variables_are_alias_for: Optional[str] = None):
         if line not in self.assignments.keys():
             self.assignments[line] = set()
         for variable in variables:
             self.assignments[line].add(variable)
 
             self.latest_assignments[variable] = line
+            self.latest_aliases[variable] = variables_are_alias_for
+
+    def record_alias(self, alias: str, variable: str):
+        self.latest_aliases[alias] = variable
 
     def record_usage(self, variables: Sequence[str], line: int):
         if line not in self.usages.keys():
@@ -68,15 +73,29 @@ class DataflowRecorderSimple:
         for variable in variables:
             self.usages[line].add(variable)
 
-            latest_assignment = self.latest_assignments.get(variable, -1)
+            definition_lines = self.get_definition_lines_from_variable(variable)
+            for definition_line in definition_lines:
+                self.record_definition_use_pair(definition_line, line)
 
-            if latest_assignment == -1:
-                if variable in self.definitions:
-                    latest_assignment = self.definitions[variable].location.start.line
+    def record_definition_use_pair(self, definition_line: int, use_line: int):
+        if definition_line not in self.dependency_table.keys():
+            self.dependency_table[definition_line] = set()
+        self.dependency_table[definition_line].add(use_line)
 
-            if latest_assignment not in self.dependency_table.keys():
-                self.dependency_table[latest_assignment] = set()
-            self.dependency_table[latest_assignment].add(line)
+    def get_definition_lines_from_variable(self, variable: str) -> Sequence[int]:
+        latest_assignment = self.latest_assignments.get(variable, -1)
+        if latest_assignment == -1:
+            if variable in self.definitions:
+                latest_assignment = self.definitions[variable].location.start.line
+
+        result_lines = [latest_assignment, ]
+
+        if variable in self.latest_aliases:
+            variable_behind_alias = self.latest_aliases[variable]
+            if variable_behind_alias:
+                result_lines.extend(self.get_definition_lines_from_variable(variable_behind_alias))
+
+        return result_lines
 
     def record_other_dependent(self, line: int):
         self.other_dependents.add(line)

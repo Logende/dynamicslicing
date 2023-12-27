@@ -110,3 +110,10 @@ def does_assignment_consider_previous_values(assign_targets: Sequence[cst.Assign
             return True
 
     return False
+
+
+def get_contained_variables(variable: str) -> Sequence[str]:
+    result = [variable,]
+    if "." in variable:
+        result.extend(get_contained_variables(variable[0: variable.rfind(".")]))
+    return result

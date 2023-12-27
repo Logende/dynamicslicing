@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, List, Callable, Sequence, Dict, Set, Tuple
+from typing import Any, List, Callable, Sequence, Dict, Set, Tuple, Optional
 
 import libcst as cst
 from dynapyt.analyses.BaseAnalysis import BaseAnalysis
@@ -10,7 +10,7 @@ from .dataflow_recorder import DataflowRecorderSimple, compute_dataflow_dependen
 from .finders import find_slicing_criterion_line, find_definitions, Definition
 from .utils import remove_lines
 from .variable_extractor import extract_variables_from_assign_targets, does_assignment_consider_previous_values, \
-    extract_variables_from_expression, extract_variables_from_args
+    extract_variables_from_expression, extract_variables_from_args, get_contained_variables
 
 
 class SliceDataflow(BaseAnalysis):
@@ -26,8 +26,8 @@ class SliceDataflow(BaseAnalysis):
         self.recorder = DataflowRecorderSimple(definitions)
         self.slicing_criterion = find_slicing_criterion_line(self.ast)
 
-    def record_assignment(self, variables: Sequence[str], line: int):
-        self.recorder.record_assignment(variables, line)
+    def record_assignment(self, variables: Sequence[str], line: int, variables_are_alias_for: Optional[str] = None):
+        self.recorder.record_assignment(variables, line, variables_are_alias_for)
 
     def record_usage(self, variables: Sequence[str], line: int):
         self.recorder.record_usage(variables, line)
@@ -45,9 +45,19 @@ class SliceDataflow(BaseAnalysis):
         if isinstance(node, cst.Assign):
             targets: Sequence[cst.AssignTarget] = node.targets
             target_variables = extract_variables_from_assign_targets(targets)
+
+            #target_variables_extensive = [get_contained_variables(target_variable) for target_variable in
+            #                              target_variables]
+
+            value: cst.BaseExpression = node.value
+            # value_variables = extract_variables_from_expression(value)
+            is_alias_for = None
+            if isinstance(value, cst.Name):
+                is_alias_for = value.value
+
             if does_assignment_consider_previous_values(targets):
                 self.record_usage(target_variables, location.start_line)
-            self.record_assignment(target_variables, location.start_line)
+            self.record_assignment(target_variables, location.start_line, is_alias_for)
 
         elif isinstance(node, cst.AugAssign):
             target_expression: cst.BaseAssignTargetExpression = node.target
