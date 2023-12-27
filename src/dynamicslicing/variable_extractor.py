@@ -72,7 +72,7 @@ def extract_variables_from_expression(expression: cst.BaseExpression) -> Sequenc
         attr = expression.attr.value
         path = prefix[0] + "." + attr
         result.append(path)
-        result.extend(prefix)
+        # result.extend(prefix)
 
     elif isinstance(expression, (cst.Integer, cst.Float, cst.SimpleString)):
         pass
@@ -112,8 +112,12 @@ def does_assignment_consider_previous_values(assign_targets: Sequence[cst.Assign
     return False
 
 
-def get_contained_variables(variable: str) -> Sequence[str]:
-    result = [variable,]
-    if "." in variable:
-        result.extend(get_contained_variables(variable[0: variable.rfind(".")]))
+def get_contained_variables(variables: Sequence[str]) -> Sequence[str]:
+    result = []
+
+    for variable in variables:
+        result.append(variable)
+        if "." in variable:
+            result.extend(get_contained_variables([variable[0: variable.rfind(".")]],))
+
     return result

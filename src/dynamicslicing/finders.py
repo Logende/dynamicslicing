@@ -36,6 +36,38 @@ def find_slicing_criterion_line(ast: cst.Module) -> int:
         return criterion_finder.results[0]
 
 
+class CallFinder(cst.CSTVisitor):
+    METADATA_DEPENDENCIES = (
+        PositionProvider,
+    )
+
+    def __init__(self, function_name: str):
+        super().__init__()
+        self.function_name = function_name
+        self.results = []
+
+    def on_visit(self, node: cst.CSTNode):
+        location = self.get_metadata(PositionProvider, node)
+        if isinstance(node, cst.Call):
+            func = node.func
+            if isinstance(func, cst.Name):
+                if func.value == self.function_name:
+                    self.results.append(location.start_line)
+        return True
+
+
+def find_slice_me_call(ast: cst.Module) -> int:
+    call_finder = CallFinder("slice_me")
+    wrapper = cst.metadata.MetadataWrapper(ast)
+    wrapper.visit(call_finder)
+    if len(call_finder.results) == 0:
+        raise RuntimeError("Unable to find slice_me call in given ast.")
+    elif len(call_finder.results) > 1:
+        raise RuntimeError("Found multiple slice_me calls in given ast: " + str(call_finder.results))
+    else:
+        return call_finder.results[0]
+
+
 class Definition:
     def __init__(self, name: str, node: cst.FunctionDef | cst.ClassDef, location: CodeRange, parent: Optional):
         self.name = name
