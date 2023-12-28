@@ -52,7 +52,7 @@ class CallFinder(cst.CSTVisitor):
             func = node.func
             if isinstance(func, cst.Name):
                 if func.value == self.function_name:
-                    self.results.append(location.start_line)
+                    self.results.append(location.start.line)
         return True
 
 

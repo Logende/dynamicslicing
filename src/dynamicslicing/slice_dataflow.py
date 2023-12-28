@@ -60,34 +60,62 @@ class SliceDataflow(BaseAnalysis):
 
         if isinstance(node, cst.Assign):
             targets: Sequence[cst.AssignTarget] = node.targets
+            value: cst.BaseExpression = node.value
+            is_alias_for = None
+            if isinstance(value, cst.Name):
+                is_alias_for = value.value
 
             for target in targets:
-                self.record_assign_to_target(target.target, location)
+                self.record_assign_to_target(target.target, location, is_alias_for, False)
 
         elif isinstance(node, cst.AugAssign):
             target_expression: cst.BaseAssignTargetExpression = node.target
-            self.record_assign_to_target(target_expression, location)
+            self.record_assign_to_target(target_expression, location, None, True)
 
         else:
             raise RuntimeError("Unexpected behavior: found write event that is not of type cst.Assign: " + str(node))
 
-    def record_assign_to_target(self, target: cst.BaseAssignTargetExpression, location):
+    def record_assign_to_target(self, target: cst.BaseAssignTargetExpression, location, is_alias_for: Optional[str],
+                                is_aug_assign: bool):
         if isinstance(target, cst.Subscript):
             subscript = target
             prefix = extract_variables_from_expression(subscript.value)[0]  # todo: support more?
+            path = prefix + "[?]"
+            if is_aug_assign:
+                self.record_modification(path, location.start_line)
+            else:
+                self.record_assignment(path, location.start_line)
+
             self.record_modification(prefix, location.start_line)
+
+            if is_alias_for:
+                self.record_alias(path, is_alias_for, location.start_line)
 
         elif isinstance(target, cst.Attribute):
             attribute = target
             prefix = extract_variables_from_expression(attribute.value)[0]  # todo: support more?
             attr = attribute.attr.value
             path = prefix + "." + attr
-            self.record_assignment(path, location.start_line)
+            if is_aug_assign:
+                self.record_modification(path, location.start_line)
+            else:
+                self.record_assignment(path, location.start_line)
+
             self.record_modification(prefix, location.start_line)
+
+            if is_alias_for:
+                self.record_alias(path, is_alias_for, location.start_line)
 
         elif isinstance(target, cst.Name):
             name = target
-            self.record_assignment(name.value, location.start_line)
+            if is_aug_assign:
+                self.record_modification(name.value, location.start_line)
+            else:
+                self.record_assignment(name.value, location.start_line)
+
+            if is_alias_for:
+                self.record_alias(name.value, is_alias_for, location.start_line)
+
         else:
             raise RuntimeError("Unknown assign target: " + str(target))
 
@@ -136,3 +164,6 @@ class SliceDataflow(BaseAnalysis):
         file_content = remove_lines(self.source, list(slice_to_save))
         with open(slice_file_path, "w") as file:
             file.write(file_content)
+
+
+# todo: function to create dataflow dependency table, code structure dependency table and later control flow dependency table. And function to merge those tables.
