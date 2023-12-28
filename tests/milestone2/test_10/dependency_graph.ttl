@@ -1,0 +1,20 @@
+@prefix ns1: <g:> .
+
+ns1:statement_1 ns1:def_has_dependent ns1:statement_2,
+        ns1:statement_3,
+        ns1:statement_4,
+        ns1:statement_5,
+        ns1:statement_6,
+        ns1:statement_7,
+        ns1:statement_8 ;
+    ns1:def_used_by ns1:statement_10 .
+
+ns1:statement_2 ns1:def_used_by ns1:statement_4,
+        ns1:statement_7 .
+
+ns1:statement_3 ns1:def_used_by ns1:statement_4 .
+
+ns1:statement_7 ns1:def_used_by ns1:statement_8 .
+
+ns1:statement_4 ns1:def_used_by ns1:statement_5 .
+
