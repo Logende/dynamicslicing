@@ -163,13 +163,15 @@ class SliceDataflow(BaseAnalysis):
         graph_definitions = create_graph_from_definitions(self.definitions)
         graph_dataflow = create_graph_from_dataflow(self.recorder, self.slicing_criterion, self.definitions)
         graph = graph_definitions + graph_dataflow
-        save_rdf_graph(graph, Path(self.source_path).parent, self.source)
 
         target_node = statement_to_node(self.slicing_criterion)
         dependency_nodes = get_dependency_nodes(graph, target_node)
 
         corresponding_lines = [node_to_statement(node) for node in dependency_nodes]
         corresponding_lines.append(self.slice_me_call)
+
+        save_rdf_graph(graph, Path(self.source_path).parent, self.source, corresponding_lines)
+
         return set(corresponding_lines)
 
     def save_slice(self, slice_to_save: Set[int]):

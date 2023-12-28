@@ -1,4 +1,5 @@
 import math
+from typing import Sequence
 
 import rdflib
 import networkx as nx
@@ -25,11 +26,20 @@ def node_to_label(node: rdflib.term.Node, source_lines: list[str]) -> str:
         return str(node)
 
 
-def save_rdf_graph(graph: rdflib.Graph, folder: Path, source: str):
+def get_node_color(node, result_statements: Sequence[int]) -> str:
+    corresponding_statement = int(str(node).split(":")[0].strip())
+    if corresponding_statement in result_statements:
+        return "green"
+    else:
+        return "red"
+
+
+def save_rdf_graph(graph: rdflib.Graph, folder: Path, source: str, result_statements: Sequence[int]):
     source_lines = source.splitlines()
 
     nx_edges = []
     nx_edge_labels = {}
+    # todo: fix edge colors. Somehow mixed up in few cases
     nx_edge_colors = []
 
     for s, p, o in graph.triples((None, None, None)):
@@ -49,12 +59,14 @@ def save_rdf_graph(graph: rdflib.Graph, folder: Path, source: str):
 
     nx_graph = nx.DiGraph()
     nx_graph.add_edges_from(nx_edges)
+
     pos = nx.spring_layout(nx_graph, scale=2, k=5/math.sqrt(nx_graph.order()))
     plt.figure(figsize=(10, 10))
     nx.draw(
         nx_graph, pos, edge_color=nx_edge_colors, width=1, linewidths=1,
-        node_size=200, node_color='pink', alpha=0.6,
-        labels={node: node for node in nx_graph.nodes()}
+        node_size=200, alpha=0.6,
+        labels={node: node for node in nx_graph.nodes()},
+        node_color=[get_node_color(node, result_statements) for node in nx_graph.nodes()]
     )
     if DRAW_EDGE_LABELS:
         nx.draw_networkx_edge_labels(
