@@ -1,3 +1,7 @@
-libcst
-dynapyt
-pytest
+libcst~=1.1.0
+dynapyt~=1.4.0
+pytest~=7.4.3
+rdflib~=7.0.0
+dynamicslicing~=0.0.1
+networkx~=3.2.1
+matplotlib~=3.8.2

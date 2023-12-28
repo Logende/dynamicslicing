@@ -11,6 +11,8 @@ from .finders import find_slicing_criterion_line, find_definitions, Definition, 
 from .utils import remove_lines
 from .variable_extractor import extract_variables_from_assign_targets, does_assignment_consider_previous_values, \
     extract_variables_from_expression, extract_variables_from_args, get_contained_variables
+from .dependency_graph import create_graph_from_definitions
+from .graph_visualizer import save_rdf_graph
 
 
 class SliceDataflow(BaseAnalysis):
@@ -26,6 +28,10 @@ class SliceDataflow(BaseAnalysis):
         self.slicing_criterion = find_slicing_criterion_line(self.ast)
         self.slice_me_call = find_slice_me_call(self.ast)
         self.recorder = DataflowRecorderSimple()
+        graph = create_graph_from_definitions(definitions)
+        save_rdf_graph(graph, Path(source_path).parent)
+        print(str(graph))
+
 
     def record_alias(self, alias: str, variable_behind_alias: str, line: int):
         self.recorder.record_alias(alias, variable_behind_alias, line)
