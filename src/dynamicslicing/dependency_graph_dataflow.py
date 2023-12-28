@@ -7,8 +7,8 @@ from dynamicslicing.dependency_graph_utils import statement_to_node
 from dynamicslicing.finders import Definition
 from dynamicslicing.dataflow_recorder import EventUse, EventModify, EventAssign, EventAlias
 
-RELATIONSHIP_DEFINITION_IS_USED_BY = URIRef("g:definition_is_used_by")
-RELATIONSHIP_DEFINITION_IS_MODIFIED_BY = URIRef("g:definition_is_modified_by")
+RELATIONSHIP_DEFINITION_IS_USED_BY = URIRef("g:def_used_by")
+RELATIONSHIP_DEFINITION_IS_MODIFIED_BY = URIRef("g:def_modified_by")
 
 
 def create_graph_from_dataflow(recorder: DataflowRecorderSimple, slicing_criterion_line: int,

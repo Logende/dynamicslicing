@@ -16,6 +16,8 @@ def get_dependency_nodes(graph: Graph, target_node: URIRef) -> Set[URIRef]:
         new_nodes: set[URIRef] = set()
 
         for node in nodes:
+            # todo: maybe it is possible to have a single query that returns all nodes connected
+            # via any path, instead of going just one step and then repeating it
             sparql_query = f"""
             SELECT DISTINCT ?sourceNode
             WHERE {{

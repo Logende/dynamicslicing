@@ -4,8 +4,8 @@ import libcst as cst
 from dynamicslicing.dependency_graph_utils import statement_to_node
 from dynamicslicing.finders import Definition
 
-RELATIONSHIP_DEFINITION_HAS_DEPENDENT = URIRef("g:definition_has_dependent")
-RELATIONSHIP_INIT_IS_MANDATORY_FOR = URIRef("g:init_is_mandatory_for")
+RELATIONSHIP_DEFINITION_HAS_DEPENDENT = URIRef("g:def_has_dependent")
+RELATIONSHIP_INIT_IS_MANDATORY_FOR = URIRef("g:init_mandatory_for")
 
 
 def create_graph_from_definitions(definitions: dict[str, Definition]) -> Graph:

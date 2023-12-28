@@ -8,11 +8,11 @@ from dynapyt.utils.nodeLocator import get_node_by_location
 
 from .dataflow_recorder import DataflowRecorderSimple
 from .dependency_graph_query import get_dependency_nodes
-from .dependency_graph_utils import statement_to_node
-from .finders import find_slicing_criterion_line, find_definitions, Definition, find_slice_me_call
+from .dependency_graph_utils import statement_to_node, node_to_statement
+from .finders import find_slicing_criterion_line, find_definitions, find_slice_me_call
 from .utils import remove_lines
-from .variable_extractor import extract_variables_from_assign_targets, does_assignment_consider_previous_values, \
-    extract_variables_from_expression, extract_variables_from_args, get_contained_variables
+from .variable_extractor import (extract_variables_from_expression, extract_variables_from_args,
+                                 get_contained_variables)
 from .dependency_graph_definitions import create_graph_from_definitions
 from .graph_visualizer import save_rdf_graph
 from .dependency_graph_dataflow import create_graph_from_dataflow
@@ -32,7 +32,6 @@ class SliceDataflow(BaseAnalysis):
         self.slice_me_call = find_slice_me_call(self.ast)
         self.recorder = DataflowRecorderSimple()
 
-
     def record_alias(self, alias: str, variable_behind_alias: str, line: int):
         self.recorder.record_alias(alias, variable_behind_alias, line)
 
@@ -43,7 +42,7 @@ class SliceDataflow(BaseAnalysis):
         for variable in variables:
             self.record_modification(variable, line)
 
-    def record_assignment(self, variable: str, line: int,):
+    def record_assignment(self, variable: str, line: int, ):
         self.recorder.record_assignment(variable, line)
 
     def record_assignments(self, variables: Sequence[str], line: int):
@@ -164,13 +163,12 @@ class SliceDataflow(BaseAnalysis):
         graph_definitions = create_graph_from_definitions(self.definitions)
         graph_dataflow = create_graph_from_dataflow(self.recorder, self.slicing_criterion, self.definitions)
         graph = graph_definitions + graph_dataflow
-        save_rdf_graph(graph, Path(self.source_path).parent)
+        save_rdf_graph(graph, Path(self.source_path).parent, self.source)
 
         target_node = statement_to_node(self.slicing_criterion)
         dependency_nodes = get_dependency_nodes(graph, target_node)
 
-        # todo: prettier conversion from nodes to lines
-        corresponding_lines = [int(str(node).replace("g:statement_", "")) for node in dependency_nodes]
+        corresponding_lines = [node_to_statement(node) for node in dependency_nodes]
         corresponding_lines.append(self.slice_me_call)
         return set(corresponding_lines)
 
@@ -181,6 +179,3 @@ class SliceDataflow(BaseAnalysis):
         file_content = remove_lines(self.source, list(slice_to_save))
         with open(slice_file_path, "w") as file:
             file.write(file_content)
-
-
-# todo: function to create dataflow dependency table, code structure dependency table and later control flow dependency table. And function to merge those tables.
