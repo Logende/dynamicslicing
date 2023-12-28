@@ -11,7 +11,7 @@ def save_rdf_graph(graph: rdflib.Graph, folder: Path):
 
     # Plot Networkx instance of RDF Graph
     # Adapted from https://stackoverflow.com/a/54095269/4743756
-    pos = nx.spring_layout(networkx_graph, scale=2)
+    pos = nx.spring_layout(networkx_graph, scale=2, k=1, iterations=50)
     edge_labels = nx.get_edge_attributes(networkx_graph, "r")
     nx.draw_networkx_edge_labels(networkx_graph, pos, edge_labels=edge_labels)
     nx.draw(networkx_graph, pos, with_labels=True)

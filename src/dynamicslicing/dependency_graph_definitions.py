@@ -1,22 +1,16 @@
-import rdflib
-from rdflib import Graph, URIRef, Literal
-from rdflib.namespace import RDFS
+from rdflib import Graph, URIRef, Namespace
 import libcst as cst
 
-from dynamicslicing.dataflow_recorder import DataflowRecorderSimple
+from dynamicslicing.dependency_graph_utils import statement_to_node
 from dynamicslicing.finders import Definition
 
-
-def create_graph_from_dataflow_recorder(recorder: DataflowRecorderSimple, slicing_criterion_line: int) -> Graph:
-    return None
-
-
-def statement_to_node(line: int) -> URIRef:
-    return URIRef("statement_" + str(line))
+RELATIONSHIP_DEFINITION_HAS_DEPENDENT = URIRef("g:definition_has_dependent")
+RELATIONSHIP_INIT_IS_MANDATORY_FOR = URIRef("g:init_is_mandatory_for")
 
 
 def create_graph_from_definitions(definitions: dict[str, Definition]) -> Graph:
     g = Graph()
+    g.bind("g", Namespace("g"))
 
     for name, definition in definitions.items():
         # make every line inside the definition dependent on the first line of the definition
@@ -25,7 +19,7 @@ def create_graph_from_definitions(definitions: dict[str, Definition]) -> Graph:
         for line in range(definition.location.start.line + 1, definition.location.end.line + 1):
             g.add((
                 statement_to_node(definition_start),
-                URIRef("definition_is_used_by"),
+                RELATIONSHIP_DEFINITION_HAS_DEPENDENT,
                 statement_to_node(line),
             ))
 
@@ -36,7 +30,7 @@ def create_graph_from_definitions(definitions: dict[str, Definition]) -> Graph:
             for init_line in range(definition.location.start.line, definition.location.end.line + 1):
                 g.add((
                     statement_to_node(init_line),
-                    URIRef("init_is_mandatory_for"),
+                    RELATIONSHIP_INIT_IS_MANDATORY_FOR,
                     statement_to_node(class_def_line),
                 ))
 

@@ -7,12 +7,15 @@ from dynapyt.instrument.IIDs import IIDs
 from dynapyt.utils.nodeLocator import get_node_by_location
 
 from .dataflow_recorder import DataflowRecorderSimple
+from .dependency_graph_query import get_dependency_nodes
+from .dependency_graph_utils import statement_to_node
 from .finders import find_slicing_criterion_line, find_definitions, Definition, find_slice_me_call
 from .utils import remove_lines
 from .variable_extractor import extract_variables_from_assign_targets, does_assignment_consider_previous_values, \
     extract_variables_from_expression, extract_variables_from_args, get_contained_variables
-from .dependency_graph import create_graph_from_definitions
+from .dependency_graph_definitions import create_graph_from_definitions
 from .graph_visualizer import save_rdf_graph
+from .dependency_graph_dataflow import create_graph_from_dataflow
 
 
 class SliceDataflow(BaseAnalysis):
@@ -24,13 +27,10 @@ class SliceDataflow(BaseAnalysis):
         iid_object = IIDs(source_path)
         self.source_path = source_path
         self.ast = cst.parse_module(self.source)
-        definitions = find_definitions(self.ast)
+        self.definitions = find_definitions(self.ast)
         self.slicing_criterion = find_slicing_criterion_line(self.ast)
         self.slice_me_call = find_slice_me_call(self.ast)
         self.recorder = DataflowRecorderSimple()
-        graph = create_graph_from_definitions(definitions)
-        save_rdf_graph(graph, Path(source_path).parent)
-        print(str(graph))
 
 
     def record_alias(self, alias: str, variable_behind_alias: str, line: int):
@@ -161,7 +161,18 @@ class SliceDataflow(BaseAnalysis):
         self.save_slice(result_slice)
 
     def compute_slice(self) -> Set[int]:
-        return set()
+        graph_definitions = create_graph_from_definitions(self.definitions)
+        graph_dataflow = create_graph_from_dataflow(self.recorder, self.slicing_criterion, self.definitions)
+        graph = graph_definitions + graph_dataflow
+        save_rdf_graph(graph, Path(self.source_path).parent)
+
+        target_node = statement_to_node(self.slicing_criterion)
+        dependency_nodes = get_dependency_nodes(graph, target_node)
+
+        # todo: prettier conversion from nodes to lines
+        corresponding_lines = [int(str(node).replace("g:statement_", "")) for node in dependency_nodes]
+        corresponding_lines.append(self.slice_me_call)
+        return set(corresponding_lines)
 
     def save_slice(self, slice_to_save: Set[int]):
         original_file_path = Path(self.source_path)
