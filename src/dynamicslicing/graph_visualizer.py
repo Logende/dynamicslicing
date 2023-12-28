@@ -8,22 +8,23 @@ from pathlib import Path
 from .dependency_graph_dataflow import RELATIONSHIP_DEFINITION_IS_USED_BY, RELATIONSHIP_DEFINITION_IS_MODIFIED_BY
 from .dependency_graph_definitions import RELATIONSHIP_INIT_IS_MANDATORY_FOR, RELATIONSHIP_DEFINITION_HAS_DEPENDENT
 from .dependency_graph_utils import node_to_statement
-from .settings import DRAW_EDGE_LABELS
+from .settings import DRAW_EDGE_LABELS, MAX_NODE_LABEL_LENGTH
 
 
 def node_to_label(node: rdflib.term.Node, source_lines: list[str]) -> str:
+    result = str(node)
+
     if isinstance(node, rdflib.URIRef):
         try:
             statement = node_to_statement(node)
-            if statement == -1:
-                return "-1"
+            if statement != -1:
+                result = str(statement) + ": '" + source_lines[statement - 1].strip() + "'"
             else:
-                return str(statement) + ": '" + source_lines[statement - 1].strip() + "'"
+                result = "-1"
         except ValueError:
             pass
 
-    else:
-        return str(node)
+    return (result[:MAX_NODE_LABEL_LENGTH-2] + '..') if len(result) > MAX_NODE_LABEL_LENGTH else result
 
 
 def get_node_color(node, result_statements: Sequence[int]) -> str:
