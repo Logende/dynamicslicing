@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 import dynapyt.instrument.IIDs
 import libcst as cst
@@ -111,3 +111,67 @@ def find_definitions(ast: cst.Module) -> dict[str, Definition]:
     wrapper = cst.metadata.MetadataWrapper(ast)
     wrapper.visit(def_finder)
     return def_finder.results
+
+
+class CFElement:
+    def __init__(self, node: cst.CSTNode, location: CodeRange, parent: Optional):
+        self.node = node
+        self.location = location
+        self.children: list[CFElement] = []
+        self.parent: Optional[CFElement] = parent
+        self.used = False
+        self.main_line = location.start.line
+        self.body_start = location.start.line + 1
+        self.body_end = location.end.line
+
+    def update_usages(self, used_lines: Sequence[int]):
+        for child in self.children:
+            child.update_usages(used_lines)
+        node_range = range(self.location.start.line, self.location.end.line + 1)
+        for used_line in used_lines:
+            if used_line in node_range:
+                self.used = True
+                break
+
+
+class CFElementConditional(CFElement):
+    def __init__(self, node: cst.If | cst.While, location: CodeRange, parent: Optional):
+        super().__init__(node, location, parent)
+
+
+class ControlFlowFinder(cst.CSTVisitor):
+    METADATA_DEPENDENCIES = (
+        PositionProvider,
+    )
+
+    def __init__(self, function_definition: Definition):
+        super().__init__()
+        self.current_element: Optional[CFElement] = CFElement(function_definition.node, function_definition.location, None)
+
+    def on_visit(self, node: cst.CSTNode):
+        location = self.get_metadata(PositionProvider, node)
+        if isinstance(node, (cst.If, cst.Else, cst.While, cst.With, cst.Finally, cst.Try)):
+            body = node.body
+
+            if isinstance(node, (cst.If, cst.While)):
+                new_element = CFElementConditional(node, location, self.current_element)
+            else:
+                new_element = CFElement(node, location, self.current_element)
+
+            self.current_element.children.append(new_element)
+            self.current_element = new_element
+
+        return True
+
+    def on_leave(self, original_node: cst.CSTNode) -> None:
+        if isinstance(original_node, (cst.If, cst.Else, cst.While, cst.With, cst.Finally, cst.Try)):
+            self.current_element = self.current_element.parent
+
+
+def find_control_flow_elements(function_def: Definition, ast: cst.Module) -> CFElement:
+    cf_finder = ControlFlowFinder(function_def)
+    wrapper = cst.metadata.MetadataWrapper(ast)
+    # note that the visitor will start from top of the ast, not from top of the function def node.
+    # this still works because the module contains only one function with control flow elements
+    wrapper.visit(cf_finder)
+    return cf_finder.current_element
