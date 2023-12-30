@@ -58,6 +58,10 @@ class Slice(BaseAnalysis):
         for variable in variables:
             self.record_usage(variable, line)
 
+    def record_conditional_usage(self, variables: Sequence[str], line: int):
+        for variable in variables:
+            self.record_usage(variable, line)
+
     def write(
             self, dyn_ast: str, iid: int, old_vals: List[Callable], new_val: Any
     ) -> Any:
@@ -152,6 +156,15 @@ class Slice(BaseAnalysis):
                     self.record_usages(target_variables_extensive, location.start_line)
                     self.record_modification(func_value.value, location.start_line)
 
+
+    def enter_if(self, dyn_ast: str, iid: int, cond_value: bool) -> Optional[bool]:
+        ast = self._get_ast(dyn_ast)
+        location = self.iid_to_location(dyn_ast, iid)
+        node = get_node_by_location(ast[0], location)
+        if isinstance(node, cst.If):
+            test = node.test
+            variables_in_test = extract_variables_from_expression(test)
+
     def begin_execution(self) -> None:
         """Hook for the start of execution."""
         pass
@@ -166,7 +179,7 @@ class Slice(BaseAnalysis):
         graph_dataflow = create_graph_from_dataflow(self.recorder, self.slicing_criterion, self.definitions)
         graph_controlflow = create_graph_from_control_flow(self.cf_elements)
         graph = graph_definitions + graph_dataflow + graph_controlflow
-
+        # todo: support for other functions in classes
         target_node = statement_to_node(self.slicing_criterion)
         dependency_nodes = get_dependency_nodes(graph, target_node)
 

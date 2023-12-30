@@ -4,6 +4,7 @@ from typing import Sequence
 import rdflib
 import networkx as nx
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 from pathlib import Path
 from .dependency_graph_dataflow import RELATIONSHIP_DEFINITION_IS_USED_BY, RELATIONSHIP_DEFINITION_IS_MODIFIED_BY
 from .dependency_graph_definitions import RELATIONSHIP_INIT_IS_MANDATORY_FOR, RELATIONSHIP_DEFINITION_HAS_DEPENDENT
@@ -25,7 +26,7 @@ def node_to_label(node: rdflib.term.Node, source_lines: list[str]) -> str:
         except ValueError:
             pass
 
-    return (result[:MAX_NODE_LABEL_LENGTH-2] + '..') if len(result) > MAX_NODE_LABEL_LENGTH else result
+    return (result[:MAX_NODE_LABEL_LENGTH - 2] + '..') if len(result) > MAX_NODE_LABEL_LENGTH else result
 
 
 def get_node_color(node, result_statements: Sequence[int]) -> str:
@@ -91,6 +92,19 @@ def save_rdf_graph(graph: rdflib.Graph, folder: Path, source: str, result_statem
             alpha=0.7
         )
     plt.margins(x=0.4)
+
+    # add legend
+    node_included = Line2D([0], [0], label='Statement in slice', marker='s', markersize=10,
+                           markeredgecolor='green', markerfacecolor='green', linestyle='')
+    node_excluded = Line2D([0], [0], label='Statement not in slice', marker='s', markersize=10,
+                           markeredgecolor='red', markerfacecolor='red', linestyle='')
+    edge_dataflow = Line2D([0], [0], label='Dataflow dependency', color='blue', linewidth=3)
+    edge_control_flow = Line2D([0], [0], label='Control flow dependency', color='purple', linewidth=2)
+    edge_structure = Line2D([0], [0], label='Structural dependency', color='brown', linewidth=1)
+    handles = [node_included, node_excluded, edge_dataflow, edge_control_flow, edge_structure]
+    plt.legend(handles=handles)
+
+    # Save it as file and also show plot directly
     plt.savefig(str(folder.joinpath("dependency_graph.png")))
     plt.show()
 
