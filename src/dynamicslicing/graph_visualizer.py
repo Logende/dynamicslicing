@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from pathlib import Path
 from .dependency_graph_dataflow import RELATIONSHIP_DEFINITION_IS_USED_BY, RELATIONSHIP_DEFINITION_IS_MODIFIED_BY
-from .dependency_graph_definitions import RELATIONSHIP_INIT_IS_MANDATORY_FOR, RELATIONSHIP_DEFINITION_HAS_DEPENDENT
+from .dependency_graph_definitions import RELATIONSHIP_DEFINITION_OUTSIDE_OF_ANALYSIS, RELATIONSHIP_DEFINITION_HAS_DEPENDENT
 from .dependency_graph_control_flow import RELATIONSHIP_CONTROL_FLOW_HAS_DEPENDENT
 from .dependency_graph_utils import node_to_statement
 from .settings import DRAW_EDGE_LABELS, MAX_NODE_LABEL_LENGTH
@@ -55,7 +55,7 @@ def save_rdf_graph(graph: rdflib.Graph, folder: Path, source: str, result_statem
             nx_edges.append(pair)
             nx_edge_labels[tuple(pair)] = str(p)
 
-            if p in (RELATIONSHIP_DEFINITION_HAS_DEPENDENT, RELATIONSHIP_INIT_IS_MANDATORY_FOR):
+            if p in (RELATIONSHIP_DEFINITION_HAS_DEPENDENT, RELATIONSHIP_DEFINITION_OUTSIDE_OF_ANALYSIS):
                 nx_definition_edges.append(pair)
             elif p in (RELATIONSHIP_DEFINITION_IS_USED_BY, RELATIONSHIP_DEFINITION_IS_MODIFIED_BY):
                 nx_dataflow_edges.append(pair)

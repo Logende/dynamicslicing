@@ -5,7 +5,7 @@ from dynamicslicing.dependency_graph_utils import statement_to_node
 from dynamicslicing.finders import Definition
 
 RELATIONSHIP_DEFINITION_HAS_DEPENDENT = URIRef("g:def_has_dependent")
-RELATIONSHIP_INIT_IS_MANDATORY_FOR = URIRef("g:init_mandatory_for")
+RELATIONSHIP_DEFINITION_OUTSIDE_OF_ANALYSIS = URIRef("g:def_not_analyzed")
 
 
 def create_graph_from_definitions(definitions: dict[str, Definition]) -> Graph:
@@ -23,14 +23,13 @@ def create_graph_from_definitions(definitions: dict[str, Definition]) -> Graph:
                 statement_to_node(line),
             ))
 
-        if definition.name == "__init__" and isinstance(definition.node, cst.FunctionDef):
-            # always make classes dependent on complete init
-            # todo: optimize to only use needed part of init
+        # as only slice_me is supposed to be analyzed, we fully include all functions inside other definitions
+        if isinstance(definition.node, cst.FunctionDef) and definition.parent:
             class_def_line = definition.parent.location.start.line
             for init_line in range(definition.location.start.line, definition.location.end.line + 1):
                 g.add((
                     statement_to_node(init_line),
-                    RELATIONSHIP_INIT_IS_MANDATORY_FOR,
+                    RELATIONSHIP_DEFINITION_OUTSIDE_OF_ANALYSIS,
                     statement_to_node(class_def_line),
                 ))
 
