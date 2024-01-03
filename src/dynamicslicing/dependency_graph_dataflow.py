@@ -6,7 +6,7 @@ from dynamicslicing.dataflow_recorder import DataflowRecorderSimple
 from dynamicslicing.dependency_graph_utils import statement_to_node
 from dynamicslicing.finders import Definition
 from dynamicslicing.dataflow_recorder import EventUse, EventModify, EventAssign, EventAlias
-from settings import FORWARD_SLICE
+from .settings import FORWARD_SLICE
 
 RELATIONSHIP_DEFINITION_IS_USED_BY = URIRef("g:def_used_by")
 RELATIONSHIP_DEFINITION_IS_MODIFIED_BY = URIRef("g:def_modified_by")
@@ -110,6 +110,7 @@ class DependencyGraphDataflowBackward:
                     definition_line = event.line
                     for usage_line in self.open_uses[event.variable]:
                         self.add_definition_use_tuple(definition_line, usage_line, RELATIONSHIP_DEFINITION_IS_USED_BY)
+                self.add_open_usage(event.variable, event.line)
 
             elif isinstance(event, EventAlias):
                 if event.alias in self.open_uses:
