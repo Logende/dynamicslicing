@@ -197,3 +197,6 @@ class Slice(BaseAnalysis):
         file_content = remove_lines(self.source, list(slice_to_save))
         with open(slice_file_path, "w") as file:
             file.write(file_content)
+
+
+# Todo: make slicing backwards!!!
