@@ -1,14 +1,16 @@
 import math
+from pathlib import Path
 from typing import Sequence
 
-import rdflib
-import networkx as nx
 import matplotlib.pyplot as plt
+import networkx as nx
+import rdflib
 from matplotlib.lines import Line2D
-from pathlib import Path
-from .dependency_graph_dataflow import RELATIONSHIP_DEFINITION_IS_USED_BY, RELATIONSHIP_DEFINITION_IS_MODIFIED_BY
-from .dependency_graph_definitions import RELATIONSHIP_DEFINITION_OUTSIDE_OF_ANALYSIS, RELATIONSHIP_DEFINITION_HAS_DEPENDENT
+
 from .dependency_graph_control_flow import RELATIONSHIP_CONTROL_FLOW_HAS_DEPENDENT
+from .dependency_graph_dataflow import (RELATIONSHIP_DEFINITION_IS_USED_BY, RELATIONSHIP_DEFINITION_IS_MODIFIED_BY)
+from .dependency_graph_definitions import RELATIONSHIP_DEFINITION_OUTSIDE_OF_ANALYSIS, \
+    RELATIONSHIP_DEFINITION_HAS_DEPENDENT
 from .dependency_graph_utils import node_to_statement
 from .settings import DRAW_EDGE_LABELS, MAX_NODE_LABEL_LENGTH
 

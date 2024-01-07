@@ -7,6 +7,7 @@ import libcst as cst
 class Event:
     def __init__(self, line: int):
         self.line = line
+        self.aliases: set[EventAlias] = set()
 
 
 class EventAssign(Event):
