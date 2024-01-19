@@ -6,13 +6,13 @@ from dynapyt.analyses.BaseAnalysis import BaseAnalysis
 from dynapyt.instrument.IIDs import IIDs
 from dynapyt.utils.nodeLocator import get_node_by_location
 
-from .control_flow_transformer import transform_control_flow
 from .dataflow_recorder import DataflowRecorderSimple
 from .dependency_graph_control_flow import create_graph_from_control_flow
 from .dependency_graph_query import get_dependency_nodes
 from .dependency_graph_utils import statement_to_node, node_to_statement
 from .finders import find_slicing_criterion_line, find_definitions, find_slice_me_call, find_control_flow_elements
 from .utils import remove_lines
+from .settings import GENERATE_PLOTS
 from .variable_extractor import (extract_variables_from_expression, extract_variables_from_args,
                                  get_contained_variables)
 from .dependency_graph_definitions import create_graph_from_definitions
@@ -156,7 +156,6 @@ class Slice(BaseAnalysis):
                     self.record_usages(target_variables_extensive, location.start_line)
                     self.record_modification(func_value.value, location.start_line)
 
-
     def enter_if(self, dyn_ast: str, iid: int, cond_value: bool) -> Optional[bool]:
         ast = self._get_ast(dyn_ast)
         location = self.iid_to_location(dyn_ast, iid)
@@ -186,7 +185,8 @@ class Slice(BaseAnalysis):
         corresponding_lines = [node_to_statement(node) for node in dependency_nodes]
         corresponding_lines.append(self.slice_me_call)
 
-        save_rdf_graph(graph, Path(self.source_path).parent, self.source, corresponding_lines)
+        if GENERATE_PLOTS:
+            save_rdf_graph(graph, Path(self.source_path).parent, self.source, corresponding_lines)
 
         return set(corresponding_lines)
 
@@ -197,6 +197,3 @@ class Slice(BaseAnalysis):
         file_content = remove_lines(self.source, list(slice_to_save))
         with open(slice_file_path, "w") as file:
             file.write(file_content)
-
-
-# Todo: make slicing backwards!!!
