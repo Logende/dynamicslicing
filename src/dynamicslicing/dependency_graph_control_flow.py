@@ -2,7 +2,7 @@ from rdflib import Graph, URIRef, Namespace
 import libcst as cst
 
 from dynamicslicing.dependency_graph_utils import statement_to_node
-from dynamicslicing.finders import Definition, CFElement
+from dynamicslicing.finders import CFElement
 
 RELATIONSHIP_CONTROL_FLOW_HAS_DEPENDENT = URIRef("g:cf_has_dependent")
 

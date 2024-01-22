@@ -156,7 +156,6 @@ class Slice(BaseAnalysis):
                     self.record_usages(target_variables_extensive, location.start_line)
                     self.record_modification(func_value.value, location.start_line)
 
-
     def begin_execution(self) -> None:
         """Hook for the start of execution."""
         pass

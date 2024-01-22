@@ -1,7 +1,7 @@
-from typing import Sequence, Dict, Set, Optional, List
-
-from .finders import Definition
-import libcst as cst
+import copy
+from typing import Dict, Set, List
+from pathlib import Path
+from json import dumps
 
 
 class Event:
@@ -35,41 +35,37 @@ class EventAlias(Event):
         self.variable_behind_alias = variable_behind_alias
 
 
-class StatementEvents:
-    def __init__(self):
-        self.assignments: Set[str] = set()
-        self.usages: Set[str] = set()
-        self.modifications: Set[str] = set()
-        self.aliases: Dict[str, str] = {}
-
-
 class DataflowRecorderSimple:
     def __init__(self):
-        self.statements: Dict[int, StatementEvents] = {}
         self.event_stack: List[Event] = []
 
-    def get_statement_events(self, line) -> StatementEvents:
-        if line not in self.statements:
-            self.statements[line] = StatementEvents()
-        events = self.statements[line]
-        return events
-
     def record_assignment(self, variable: str, line: int):
-        events = self.get_statement_events(line)
-        events.assignments.add(variable)
         self.event_stack.append(EventAssign(line, variable))
 
     def record_alias(self, alias: str, variable: str, line: int):
-        events = self.get_statement_events(line)
-        events.aliases[alias] = variable
         self.event_stack.append(EventAlias(line, alias, variable))
 
     def record_modification(self, variable: str, line: int):
-        events = self.get_statement_events(line)
-        events.modifications.add(variable)
         self.event_stack.append(EventModify(line, variable))
 
     def record_usage(self, variable: str, line: int):
-        events = self.get_statement_events(line)
-        events.usages.add(variable)
         self.event_stack.append(EventUse(line, variable))
+
+
+def convert_recorder_to_dict(recorder: DataflowRecorderSimple) -> dict:
+    events = []
+
+    for event in recorder.event_stack:
+        event_copy = copy.deepcopy(event)
+        # turn set into list because sets are not JSON serializable
+        event_copy.aliases = list(event_copy.aliases)
+        event_copy.type = event_copy.__class__.__name__
+        events.append(event_copy.__dict__)
+
+    return {"events": events}
+
+
+def save_recorder_to_file(recorder: DataflowRecorderSimple, path: Path):
+    json_string = dumps(convert_recorder_to_dict(recorder), indent=4)
+    with open(path, 'w') as file:
+        file.write(json_string)

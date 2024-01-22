@@ -1,6 +1,5 @@
 from typing import Optional, Sequence
 
-import dynapyt.instrument.IIDs
 import libcst as cst
 from libcst._position import CodeRange
 from libcst.metadata import PositionProvider
@@ -119,19 +118,9 @@ class CFElement:
         self.location = location
         self.children: list[CFElement] = []
         self.parent: Optional[CFElement] = parent
-        self.used = False
         self.main_line = location.start.line
         self.body_start = location.start.line + 1
         self.body_end = location.end.line
-
-    def update_usages(self, used_lines: Sequence[int]):
-        for child in self.children:
-            child.update_usages(used_lines)
-        node_range = range(self.location.start.line, self.location.end.line + 1)
-        for used_line in used_lines:
-            if used_line in node_range:
-                self.used = True
-                break
 
 
 class CFElementConditional(CFElement):
