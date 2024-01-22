@@ -6,13 +6,13 @@ from dynapyt.analyses.BaseAnalysis import BaseAnalysis
 from dynapyt.instrument.IIDs import IIDs
 from dynapyt.utils.nodeLocator import get_node_by_location
 
-from .dataflow_recorder import DataflowRecorderSimple
+from .dataflow_recorder import DataflowRecorderSimple, save_recorder_to_file
 from .dependency_graph_control_flow import create_graph_from_control_flow
 from .dependency_graph_query import get_dependency_nodes
 from .dependency_graph_utils import statement_to_node, node_to_statement
 from .finders import find_slicing_criterion_line, find_definitions, find_slice_me_call, find_control_flow_elements
 from .utils import remove_lines
-from .settings import GENERATE_PLOTS
+from .settings import GENERATE_PLOTS, SAVE_RECORDER_DATA
 from .variable_extractor import (extract_variables_from_expression, extract_variables_from_args,
                                  get_contained_variables)
 from .dependency_graph_definitions import create_graph_from_definitions
@@ -156,13 +156,6 @@ class Slice(BaseAnalysis):
                     self.record_usages(target_variables_extensive, location.start_line)
                     self.record_modification(func_value.value, location.start_line)
 
-    def enter_if(self, dyn_ast: str, iid: int, cond_value: bool) -> Optional[bool]:
-        ast = self._get_ast(dyn_ast)
-        location = self.iid_to_location(dyn_ast, iid)
-        node = get_node_by_location(ast[0], location)
-        if isinstance(node, cst.If):
-            test = node.test
-            variables_in_test = extract_variables_from_expression(test)
 
     def begin_execution(self) -> None:
         """Hook for the start of execution."""
@@ -187,6 +180,9 @@ class Slice(BaseAnalysis):
 
         if GENERATE_PLOTS:
             save_rdf_graph(graph, Path(self.source_path).parent, self.source, corresponding_lines)
+
+        if SAVE_RECORDER_DATA:
+            save_recorder_to_file(self.recorder, Path(self.source_path).parent.joinpath("recorder.json"))
 
         return set(corresponding_lines)
 

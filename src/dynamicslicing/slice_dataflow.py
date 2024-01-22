@@ -6,10 +6,11 @@ from dynapyt.analyses.BaseAnalysis import BaseAnalysis
 from dynapyt.instrument.IIDs import IIDs
 from dynapyt.utils.nodeLocator import get_node_by_location
 
-from .dataflow_recorder import DataflowRecorderSimple
+from .dataflow_recorder import DataflowRecorderSimple, save_recorder_to_file
 from .dependency_graph_query import get_dependency_nodes
 from .dependency_graph_utils import statement_to_node, node_to_statement
 from .finders import find_slicing_criterion_line, find_definitions, find_slice_me_call
+from .settings import GENERATE_PLOTS, SAVE_RECORDER_DATA
 from .utils import remove_lines
 from .variable_extractor import (extract_variables_from_expression, extract_variables_from_args,
                                  get_contained_variables)
@@ -170,7 +171,11 @@ class SliceDataflow(BaseAnalysis):
         corresponding_lines = [node_to_statement(node) for node in dependency_nodes]
         corresponding_lines.append(self.slice_me_call)
 
-        save_rdf_graph(graph, Path(self.source_path).parent, self.source, corresponding_lines)
+        if GENERATE_PLOTS:
+            save_rdf_graph(graph, Path(self.source_path).parent, self.source, corresponding_lines)
+
+        if SAVE_RECORDER_DATA:
+            save_recorder_to_file(self.recorder, Path(self.source_path).parent.joinpath("recorder.json"))
 
         return set(corresponding_lines)
 

@@ -2,11 +2,10 @@ from typing import Dict
 
 from rdflib import Graph, URIRef, Namespace
 
-from dynamicslicing.dataflow_recorder import DataflowRecorderSimple, Event
+from dynamicslicing.dataflow_recorder import DataflowRecorderSimple
 from dynamicslicing.dependency_graph_utils import statement_to_node
 from dynamicslicing.finders import Definition
 from dynamicslicing.dataflow_recorder import EventUse, EventModify, EventAssign, EventAlias
-from .settings import FORWARD_SLICE
 
 RELATIONSHIP_DEFINITION_IS_USED_BY = URIRef("g:def_used_by")
 RELATIONSHIP_DEFINITION_IS_MODIFIED_BY = URIRef("g:def_modified_by")
@@ -14,10 +13,7 @@ RELATIONSHIP_DEFINITION_IS_MODIFIED_BY = URIRef("g:def_modified_by")
 
 def create_graph_from_dataflow(recorder: DataflowRecorderSimple, slicing_criterion_line: int,
                                definitions: dict[str, Definition]) -> Graph:
-    if FORWARD_SLICE:
-        return DependencyGraphDataflowForward(recorder, slicing_criterion_line, definitions).g
-    else:
-        return DependencyGraphDataflowBackward(recorder, slicing_criterion_line, definitions).g
+    return DependencyGraphDataflowForward(recorder, slicing_criterion_line, definitions).g
 
 
 class DependencyGraphDataflowForward:
@@ -77,90 +73,3 @@ class DependencyGraphDataflowForward:
                 result_lines.update(self.get_definitions_for_variable(variable_behind_alias))
 
         return result_lines
-
-
-def preprocess_alias(alias_event: EventAlias, events: list[Event]):
-    alias_active = False
-    for event in events:
-        if not alias_active:
-            if event == alias_event:
-                alias_active = True
-            continue
-
-        else:
-            if isinstance(event, EventUse) and event.variable in (alias_event.alias, alias_event.variable_behind_alias):
-                event.aliases.add(alias_event)
-            elif isinstance(event, EventModify) and event.variable in (alias_event.alias,
-                                                                       alias_event.variable_behind_alias):
-                event.aliases.add(alias_event)
-            elif isinstance(event, EventAlias) and event.alias == alias_event.alias:
-                break  # as the variable to watch is re-assigned, future events are unrelated to the alias
-            elif isinstance(event, EventAssign) and event.variable == alias_event.alias:
-                break  # as the variable to watch is re-assigned, future events are unrelated to the alias
-
-
-def preprocess_aliases(events: list[Event]):
-    for event in events:
-        if isinstance(event, EventAlias):
-            preprocess_alias(event, events)
-
-
-class DependencyGraphDataflowBackward:
-
-    def __init__(self, recorder: DataflowRecorderSimple, slicing_criterion_line: int,
-                 definitions: dict[str, Definition]):
-        self.g = Graph()
-        self.g.bind("g", Namespace("g"))
-        self.slicing_criterion_line = slicing_criterion_line
-        self.definitions = definitions
-        self.open_uses: dict[str, set[int]] = {}
-        # adds alias annotation to all events where variable has an alias
-        preprocess_aliases(recorder.event_stack)
-
-        for event in reversed(recorder.event_stack):
-
-            if isinstance(event, EventAssign):
-                if event.variable in self.open_uses:
-                    definition_line = event.line
-                    for usage_line in self.open_uses[event.variable]:
-                        self.add_definition_use_tuple(definition_line, usage_line, RELATIONSHIP_DEFINITION_IS_USED_BY)
-                    del self.open_uses[event.variable]
-
-            elif isinstance(event, EventUse):
-                if event.variable in self.definitions:
-                    definition_line = self.definitions[event.variable].location.start.line
-                    self.add_definition_use_tuple(definition_line, event.line, RELATIONSHIP_DEFINITION_IS_USED_BY)
-                else:
-                    self.add_open_usage(event.variable, event.line)
-
-            elif isinstance(event, EventModify):
-                if event.variable in self.open_uses:
-                    definition_line = event.line
-                    for usage_line in self.open_uses[event.variable]:
-                        self.add_definition_use_tuple(definition_line, usage_line, RELATIONSHIP_DEFINITION_IS_USED_BY)
-                self.add_open_usage(event.variable, event.line)
-                for alias_event in event.aliases:
-                    if alias_event.variable_behind_alias in self.open_uses:
-                        definition_line = event.line
-                        for usage_line in self.open_uses[alias_event.variable_behind_alias]:
-                            self.add_definition_use_tuple(definition_line, usage_line,
-                                                          RELATIONSHIP_DEFINITION_IS_USED_BY)
-
-            elif isinstance(event, EventAlias):
-                if event.alias in self.open_uses:
-                    definition_line = event.line
-                    for usage_line in self.open_uses[event.alias]:
-                        self.add_definition_use_tuple(definition_line, usage_line, RELATIONSHIP_DEFINITION_IS_USED_BY)
-                    del self.open_uses[event.alias]
-
-    def add_open_usage(self, variable: str, line: int):
-        if variable not in self.open_uses:
-            self.open_uses[variable] = set()
-        self.open_uses[variable].add(line)
-
-    def add_definition_use_tuple(self, definition_line: int, use_line: int, relationship: URIRef):
-        self.g.add((
-            statement_to_node(definition_line),
-            relationship,
-            statement_to_node(use_line),
-        ))
