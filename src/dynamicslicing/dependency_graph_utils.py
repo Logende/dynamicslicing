@@ -1,3 +1,5 @@
+"""Utility file used to make sure the different RDF graph functions use the same node naming conventions."""
+
 from rdflib import URIRef
 
 

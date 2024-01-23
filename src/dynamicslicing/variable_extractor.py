@@ -1,3 +1,5 @@
+"""Utility file to extract variables from CST elements."""
+
 from typing import Sequence
 import libcst as cst
 

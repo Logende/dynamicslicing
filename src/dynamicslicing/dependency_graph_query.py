@@ -1,3 +1,6 @@
+"""This file provides a function to determine all (directly or indirectly) connected nodes to a given target node in
+an RDF graph, with all edges being towards the direction of the target node."""
+
 from typing import Set
 
 from rdflib import URIRef

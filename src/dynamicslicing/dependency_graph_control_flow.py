@@ -1,3 +1,8 @@
+"""This file provides a function to generate an RDF knowledge graph based on static analysis of controlflow nodes
+of an AST. The resulting graph contains an edge from each line of a controlflow element body to the head of the
+controlflow element."""
+
+
 from rdflib import Graph, URIRef, Namespace
 import libcst as cst
 

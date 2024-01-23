@@ -1,35 +1,13 @@
+"""This file implements a utility function to extract only the provided set of lines of code from an AST."""
+
 from typing import List, Union
 import libcst as cst
-from libcst._nodes.statement import BaseStatement, If
 from libcst import CSTNodeT, RemovalSentinel, FlattenSentinel
-from libcst._position import CodeRange
 from libcst.metadata import (
     ParentNodeProvider,
     PositionProvider,
 )
 import libcst.matchers as m
-
-
-class OddIfNegation(m.MatcherDecoratableTransformer):
-    """
-    Negate the test of every if statement on an odd line.
-    """
-    METADATA_DEPENDENCIES = (
-        ParentNodeProvider,
-        PositionProvider,
-    )
-
-    def leave_If(self, original_node: If, updated_node: If) -> BaseStatement | FlattenSentinel[BaseStatement] | RemovalSentinel:
-        location = self.get_metadata(PositionProvider, original_node)
-        if location.start.line % 2 == 0:
-            return updated_node
-        negated_test = cst.UnaryOperation(
-            operator=cst.Not(),
-            expression=updated_node.test,
-        )
-        return updated_node.with_changes(
-            test=negated_test,
-        )
 
 
 class LineRemover(m.MatcherDecoratableTransformer):
@@ -48,7 +26,8 @@ class LineRemover(m.MatcherDecoratableTransformer):
     def on_visit(self, node: cst.CSTNode):
         return self.is_keep_node(node)
 
-    def on_leave(self, original_node: CSTNodeT, updated_node: CSTNodeT) -> Union[CSTNodeT, RemovalSentinel, FlattenSentinel[CSTNodeT]]:
+    def on_leave(self, original_node: CSTNodeT, updated_node: CSTNodeT) -> Union[CSTNodeT, RemovalSentinel,
+                                                                                 FlattenSentinel[CSTNodeT]]:
         if self.is_keep_node(original_node):
             return updated_node
 
@@ -57,14 +36,6 @@ class LineRemover(m.MatcherDecoratableTransformer):
     def is_keep_node(self, node: cst.CSTNode):
         location = self.get_metadata(PositionProvider, node)
         return location.start.line in self.lines_to_keep or isinstance(node, cst.IndentedBlock)
-
-
-def negate_odd_ifs(code: str) -> str:
-    syntax_tree = cst.parse_module(code)
-    wrapper = cst.metadata.MetadataWrapper(syntax_tree)
-    code_modifier = OddIfNegation()
-    new_syntax_tree = wrapper.visit(code_modifier)
-    return new_syntax_tree.code
 
 
 def remove_lines(code: str, lines_to_keep: List[int]) -> str:

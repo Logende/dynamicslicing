@@ -1,5 +1,8 @@
+"""This file defines the event recorder classes for dataflow events. To be filled with data during
+execution of instructed code. Can then be used to perform dataflow analysis based on the recorded events."""
+
 import copy
-from typing import Dict, Set, List
+from typing import List
 from pathlib import Path
 from json import dumps
 

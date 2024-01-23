@@ -1,3 +1,6 @@
+"""This file provides a function to generate an RDF knowledge graph based on recorded dataflow events, modeling
+dataflow dependencies."""
+
 from typing import Dict
 
 from rdflib import Graph, URIRef, Namespace

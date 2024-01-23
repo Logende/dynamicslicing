@@ -1,4 +1,6 @@
-from typing import Optional, Sequence
+"""This file contains helper functions to extract information from an AST using static analysis methods."""
+
+from typing import Optional
 
 import libcst as cst
 from libcst._position import CodeRange

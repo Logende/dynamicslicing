@@ -1,3 +1,5 @@
+"""This file implements slicing and can handle dataflow, controlflow and structural dependencies."""
+
 from pathlib import Path
 from typing import Any, List, Callable, Sequence, Dict, Set, Tuple, Optional
 

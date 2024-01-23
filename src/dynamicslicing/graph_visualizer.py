@@ -1,3 +1,6 @@
+"""This file provides a function to plot a RDF knowledge graph with dataflow, controlflow and structural dependencies.
+"""
+
 import math
 from pathlib import Path
 from typing import Sequence
@@ -12,7 +15,7 @@ from .dependency_graph_dataflow import (RELATIONSHIP_DEFINITION_IS_USED_BY, RELA
 from .dependency_graph_definitions import RELATIONSHIP_DEFINITION_OUTSIDE_OF_ANALYSIS, \
     RELATIONSHIP_DEFINITION_HAS_DEPENDENT
 from .dependency_graph_utils import node_to_statement
-from .settings import DRAW_EDGE_LABELS, MAX_NODE_LABEL_LENGTH
+from .settings import DRAW_EDGE_LABELS, MAX_NODE_LABEL_LENGTH, PLOT_WIDTH, PLOT_HEIGHT
 
 
 def node_to_label(node: rdflib.term.Node, source_lines: list[str]) -> str:
@@ -70,7 +73,7 @@ def save_rdf_graph(graph: rdflib.Graph, folder: Path, source: str, result_statem
     nx_graph.add_edges_from(nx_edges)
 
     pos = nx.spring_layout(nx_graph, scale=2, k=5 / math.sqrt(nx_graph.order()))
-    fig = plt.figure(figsize=(14, 5))
+    fig = plt.figure(figsize=(PLOT_WIDTH, PLOT_HEIGHT))
     ax = fig.add_subplot()
     ax.set_title(str(folder.parent.name) + "/" + str(folder.name))
 
