@@ -70,7 +70,7 @@ def save_rdf_graph(graph: rdflib.Graph, folder: Path, source: str, result_statem
     nx_graph.add_edges_from(nx_edges)
 
     pos = nx.spring_layout(nx_graph, scale=2, k=5 / math.sqrt(nx_graph.order()))
-    fig = plt.figure(figsize=(10, 10))
+    fig = plt.figure(figsize=(14, 5))
     ax = fig.add_subplot()
     ax.set_title(str(folder.parent.name) + "/" + str(folder.name))
 

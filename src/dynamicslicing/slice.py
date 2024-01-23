@@ -170,7 +170,6 @@ class Slice(BaseAnalysis):
         graph_dataflow = create_graph_from_dataflow(self.recorder, self.slicing_criterion, self.definitions)
         graph_controlflow = create_graph_from_control_flow(self.cf_elements)
         graph = graph_definitions + graph_dataflow + graph_controlflow
-        # todo: support for other functions in classes
         target_node = statement_to_node(self.slicing_criterion)
         dependency_nodes = get_dependency_nodes(graph, target_node)
 

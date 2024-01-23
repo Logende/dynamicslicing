@@ -1,5 +1,5 @@
 # Plot related settings
-GENERATE_PLOTS = False
+GENERATE_PLOTS = True
 MAX_NODE_LABEL_LENGTH = 30
 DRAW_EDGE_LABELS = False
 
