@@ -1,0 +1,142 @@
+{
+    "events": [
+        {
+            "line": 14,
+            "aliases": [],
+            "variable": "slice_me",
+            "type": "EventUse"
+        },
+        {
+            "line": 2,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventAssign"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventUse"
+        },
+        {
+            "line": 5,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventUse"
+        },
+        {
+            "line": 8,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventAssign"
+        },
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventAssign"
+        },
+        {
+            "line": 10,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventModify"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventModify"
+        },
+        {
+            "line": 10,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventModify"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventModify"
+        },
+        {
+            "line": 10,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventModify"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventModify"
+        },
+        {
+            "line": 10,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventModify"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventModify"
+        },
+        {
+            "line": 10,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventModify"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventModify"
+        },
+        {
+            "line": 10,
+            "aliases": [],
+            "variable": "i",
+            "type": "EventUse"
+        },
+        {
+            "line": 13,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventUse"
+        }
+    ]
+}

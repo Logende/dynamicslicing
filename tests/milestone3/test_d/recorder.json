@@ -1,0 +1,47 @@
+{
+    "events": [
+        {
+            "line": 6,
+            "aliases": [],
+            "variable": "slice_me",
+            "type": "EventUse"
+        },
+        {
+            "line": 2,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventAssign"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventUse"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "b",
+            "type": "EventAssign"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "alias": "b",
+            "variable_behind_alias": "a",
+            "type": "EventAlias"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "b",
+            "type": "EventModify"
+        },
+        {
+            "line": 5,
+            "aliases": [],
+            "variable": "a",
+            "type": "EventUse"
+        }
+    ]
+}
