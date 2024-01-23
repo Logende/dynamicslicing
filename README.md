@@ -1,4 +1,8 @@
-# dynamicslicing
+# Dynamic Python program analysis using backwards slicing
+
+
+Refer to the [project report](./report/ProgramAnalysisReport.pdf) for more detailed information.
+
 
 ## Installation
 
@@ -8,9 +12,15 @@ pip install -e .
 ```
 
 
-Todo: report
+## Test execution
 
-* What is slicing? Dynamic slicing?
-* Approach in this project (subset for different categories)
-* Plot/Graph approach
-* Different test cases and corresponding results
+To run all tests:
+```console
+pytest tests
+```
+
+To run a particular milestone:
+```console
+pytest tests --only tests/milestone2
+pytest tests --only tests/milestone3
+```
