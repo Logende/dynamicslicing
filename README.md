@@ -24,3 +24,6 @@ To run a particular milestone:
 pytest tests --only tests/milestone2
 pytest tests --only tests/milestone3
 ```
+
+## Coding guidelines
+This project is developed according to [pep8](https://pep8.org) standards.
