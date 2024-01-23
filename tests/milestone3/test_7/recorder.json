@@ -1,0 +1,1541 @@
+{
+    "events": [
+        {
+            "line": 17,
+            "aliases": [],
+            "variable": "slice_me",
+            "type": "EventUse"
+        },
+        {
+            "line": 10,
+            "aliases": [],
+            "variable": "Person",
+            "type": "EventUse"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "name",
+            "type": "EventUse"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "self.name",
+            "type": "EventAssign"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "alias": "self.name",
+            "variable_behind_alias": "name",
+            "type": "EventAlias"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventAssign"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 10,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventAssign"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p.increase_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 12,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "years",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self.age",
+            "type": "EventModify"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 13,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 13,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 13,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 14,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 14,
+            "aliases": [],
+            "variable": "p.name",
+            "type": "EventUse"
+        },
+        {
+            "line": 14,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 14,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 14,
+            "aliases": [],
+            "variable": "p.age",
+            "type": "EventUse"
+        },
+        {
+            "line": 14,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 15,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        }
+    ]
+}

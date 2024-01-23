@@ -12,7 +12,7 @@ ns1:statement_5 ns1:def_has_dependent ns1:statement_6,
     ns1:def_used_by ns1:statement_11 .
 
 ns1:statement_2 ns1:def_has_dependent ns1:statement_3 ;
-    ns1:init_mandatory_for ns1:statement_1 .
+    ns1:def_not_analyzed ns1:statement_1 .
 
 ns1:statement_7 ns1:def_used_by ns1:statement_8 .
 
@@ -23,5 +23,5 @@ ns1:statement_1 ns1:def_has_dependent ns1:statement_2,
 ns1:statement_6 ns1:def_used_by ns1:statement_8,
         ns1:statement_9 .
 
-ns1:statement_3 ns1:init_mandatory_for ns1:statement_1 .
+ns1:statement_3 ns1:def_not_analyzed ns1:statement_1 .
 

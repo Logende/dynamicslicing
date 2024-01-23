@@ -1,0 +1,101 @@
+{
+    "events": [
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "slice_me",
+            "type": "EventUse"
+        },
+        {
+            "line": 6,
+            "aliases": [],
+            "variable": "Person",
+            "type": "EventUse"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "name",
+            "type": "EventUse"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "self.name",
+            "type": "EventAssign"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "self",
+            "type": "EventModify"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "alias": "self.name",
+            "variable_behind_alias": "name",
+            "type": "EventAlias"
+        },
+        {
+            "line": 6,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventAssign"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "indefinite_pronouns",
+            "type": "EventAssign"
+        },
+        {
+            "line": 8,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 8,
+            "aliases": [],
+            "variable": "p.name",
+            "type": "EventUse"
+        },
+        {
+            "line": 8,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 8,
+            "aliases": [],
+            "variable": "indefinite_pronouns",
+            "type": "EventUse"
+        },
+        {
+            "line": 8,
+            "aliases": [],
+            "variable": "indefinite_name",
+            "type": "EventAssign"
+        },
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        },
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "p.name",
+            "type": "EventUse"
+        },
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "p",
+            "type": "EventUse"
+        }
+    ]
+}

@@ -1,0 +1,108 @@
+{
+    "events": [
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "slice_me",
+            "type": "EventUse"
+        },
+        {
+            "line": 2,
+            "aliases": [],
+            "variable": "arr",
+            "type": "EventAssign"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "arr",
+            "type": "EventUse"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "brr",
+            "type": "EventAssign"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "alias": "brr",
+            "variable_behind_alias": "arr",
+            "type": "EventAlias"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "brr",
+            "type": "EventUse"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "brr.append",
+            "type": "EventUse"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "brr",
+            "type": "EventUse"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "brr",
+            "type": "EventModify"
+        },
+        {
+            "line": 5,
+            "aliases": [],
+            "variable": "arr",
+            "type": "EventUse"
+        },
+        {
+            "line": 5,
+            "aliases": [],
+            "variable": "arr.pop",
+            "type": "EventUse"
+        },
+        {
+            "line": 5,
+            "aliases": [],
+            "variable": "arr",
+            "type": "EventUse"
+        },
+        {
+            "line": 5,
+            "aliases": [],
+            "variable": "arr",
+            "type": "EventModify"
+        },
+        {
+            "line": 6,
+            "aliases": [],
+            "variable": "arr",
+            "type": "EventUse"
+        },
+        {
+            "line": 6,
+            "aliases": [],
+            "variable": "result",
+            "type": "EventAssign"
+        },
+        {
+            "line": 6,
+            "aliases": [],
+            "alias": "result",
+            "variable_behind_alias": "arr",
+            "type": "EventAlias"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "result",
+            "type": "EventUse"
+        }
+    ]
+}

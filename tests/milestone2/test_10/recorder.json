@@ -1,0 +1,82 @@
+{
+    "events": [
+        {
+            "line": 10,
+            "aliases": [],
+            "variable": "slice_me",
+            "type": "EventUse"
+        },
+        {
+            "line": 2,
+            "aliases": [],
+            "variable": "german_greetings",
+            "type": "EventAssign"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "english_greetings",
+            "type": "EventAssign"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "german_greetings",
+            "type": "EventUse"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "german_greetings",
+            "type": "EventUse"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "english_greetings",
+            "type": "EventUse"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "english_greetings",
+            "type": "EventUse"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "translation",
+            "type": "EventAssign"
+        },
+        {
+            "line": 5,
+            "aliases": [],
+            "variable": "translation",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "german_greetings",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "german_greetings",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "greeting",
+            "type": "EventAssign"
+        },
+        {
+            "line": 8,
+            "aliases": [],
+            "variable": "greeting",
+            "type": "EventUse"
+        }
+    ]
+}

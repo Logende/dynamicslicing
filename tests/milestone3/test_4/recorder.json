@@ -1,0 +1,172 @@
+{
+    "events": [
+        {
+            "line": 13,
+            "aliases": [],
+            "variable": "slice_me",
+            "type": "EventUse"
+        },
+        {
+            "line": 2,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventAssign"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventUse"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventUse"
+        },
+        {
+            "line": 3,
+            "aliases": [],
+            "variable": "smallest_age",
+            "type": "EventAssign"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventUse"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventUse"
+        },
+        {
+            "line": 4,
+            "aliases": [],
+            "variable": "middle_age",
+            "type": "EventAssign"
+        },
+        {
+            "line": 5,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventUse"
+        },
+        {
+            "line": 5,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventUse"
+        },
+        {
+            "line": 5,
+            "aliases": [],
+            "variable": "highest_age",
+            "type": "EventAssign"
+        },
+        {
+            "line": 6,
+            "aliases": [],
+            "variable": "middle_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 6,
+            "aliases": [],
+            "variable": "highest_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 6,
+            "aliases": [],
+            "variable": "new_highest_age",
+            "type": "EventAssign"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "ages.append",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "new_highest_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "new_highest_age",
+            "type": "EventUse"
+        },
+        {
+            "line": 7,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventModify"
+        },
+        {
+            "line": 8,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventUse"
+        },
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "age",
+            "type": "EventUse"
+        },
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "age",
+            "type": "EventUse"
+        },
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "age",
+            "type": "EventUse"
+        },
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "age",
+            "type": "EventUse"
+        },
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "age",
+            "type": "EventUse"
+        },
+        {
+            "line": 9,
+            "aliases": [],
+            "variable": "age",
+            "type": "EventUse"
+        },
+        {
+            "line": 11,
+            "aliases": [],
+            "variable": "ages",
+            "type": "EventUse"
+        }
+    ]
+}
