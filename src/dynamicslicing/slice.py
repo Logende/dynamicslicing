@@ -60,10 +60,6 @@ class Slice(BaseAnalysis):
         for variable in variables:
             self.record_usage(variable, line)
 
-    def record_conditional_usage(self, variables: Sequence[str], line: int):
-        for variable in variables:
-            self.record_usage(variable, line)
-
     def write(
             self, dyn_ast: str, iid: int, old_vals: List[Callable], new_val: Any
     ) -> Any:
