@@ -13,7 +13,7 @@ from .dependency_graph_control_flow import create_graph_from_control_flow
 from .dependency_graph_query import get_dependency_nodes
 from .dependency_graph_utils import statement_to_node, node_to_statement
 from .finders import find_slicing_criterion_line, find_definitions, find_slice_me_call, find_control_flow_elements
-from .utils import remove_lines
+from .utils import remove_lines, is_of_primitive_type
 from .settings import GENERATE_PLOTS, SAVE_RECORDER_DATA
 from .variable_extractor import (extract_variables_from_expression, extract_variables_from_args,
                                  get_contained_variables)
@@ -71,7 +71,7 @@ class Slice(BaseAnalysis):
             targets: Sequence[cst.AssignTarget] = node.targets
             value: cst.BaseExpression = node.value
             is_alias_for = None
-            if isinstance(value, cst.Name):
+            if isinstance(value, cst.Name) and not is_of_primitive_type(new_val):
                 is_alias_for = value.value
 
             for target in targets:

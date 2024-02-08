@@ -44,3 +44,7 @@ def remove_lines(code: str, lines_to_keep: List[int]) -> str:
     code_modifier = LineRemover(lines_to_keep)
     new_syntax_tree = wrapper.visit(code_modifier)
     return new_syntax_tree.code
+
+
+def is_of_primitive_type(value: any) -> bool:
+    return isinstance(value, (bool, str, int, float, type(None)))
