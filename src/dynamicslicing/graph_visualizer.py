@@ -85,9 +85,9 @@ def save_rdf_graph(graph: rdflib.Graph, folder: Path, source: str, result_statem
 
     nx.draw_networkx_edges(nx_graph, pos, edgelist=nx_control_flow_edges, edge_color='purple', arrows=True, width=2,
                            alpha=1)
+    nx.draw_networkx_edges(nx_graph, pos, edgelist=nx_dataflow_edges, edge_color='blue', arrows=True, width=3)
     nx.draw_networkx_edges(nx_graph, pos, edgelist=nx_definition_edges, edge_color='brown', arrows=True, width=1,
                            alpha=0.3)
-    nx.draw_networkx_edges(nx_graph, pos, edgelist=nx_dataflow_edges, edge_color='blue', arrows=True, width=3)
 
     if DRAW_EDGE_LABELS:
         nx.draw_networkx_edge_labels(
